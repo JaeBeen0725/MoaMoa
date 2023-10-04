@@ -6,17 +6,70 @@
 //
 
 import UIKit
+import RealmSwift
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    let realm = try! Realm()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        
+        guard let scene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(windowScene: scene)
+
+        let homeViewController = UINavigationController(rootViewController: HomeViewController())
+        let categoryViewController = UINavigationController(rootViewController: CategoryViewController())
+        let settingViewControlelr = UINavigationController(rootViewController: SettingViewController())
+
+        let tabBarController = UITabBarController()
+        tabBarController.setViewControllers([homeViewController, categoryViewController, settingViewControlelr], animated: true)
+        
+        let isLaunched = UserDefaults.standard.bool(forKey: "isLaunched")
+        if isLaunched == false {
+            let allData = CateGoryRealm(title: "All")
+            let likeData = CateGoryRealm(title: "Like")
+            try! realm.write{
+                realm.add(allData)
+                realm.add(likeData)
+            }
+        
+      UserDefaults.standard.set(true, forKey: "isLaunched")
+
+            if let item = tabBarController.tabBar.items {
+                item[0].title = "메인"
+                item[0].image = UIImage(systemName: "magnifyingglass")
+    
+                item[1].title = "카테고리"
+                item[1].image = UIImage(systemName: "heart")
+                
+                item[2].title = "설정"
+                item[2].image = UIImage(systemName: "magnifyingglass")
+                
+                tabBarController.tabBar.tintColor = .brown
+
+            }
+        } else {
+            if let item = tabBarController.tabBar.items {
+                item[0].title = "메인"
+                item[0].image = UIImage(systemName: "magnifyingglass")
+                
+                item[1].title = "카테고리"
+                item[1].image = UIImage(systemName: "heart")
+                
+                item[2].title = "설정"
+                item[2].image = UIImage(systemName: "magnifyingglass")
+                
+                tabBarController.tabBar.tintColor = .brown
+
+            }
+          
+        }
+        
+        
+
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

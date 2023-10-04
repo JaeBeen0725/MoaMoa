@@ -5,4 +5,17 @@
 //  Created by Jae Oh on 2023/10/01.
 //
 
-import Foundation
+import UIKit
+
+class BaseViewController: UIViewController {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configure()
+        setContraints()
+    }
+    
+    func configure() { }
+    func setContraints() { }
+}
