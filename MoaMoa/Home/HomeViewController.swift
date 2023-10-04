@@ -54,7 +54,7 @@ class HomeViewController: BaseViewController {
         
         navigationItem.searchController = searchController
         self.definesPresentationContext = true
-        searchController.searchResultsUpdater = self
+        
         searchController.searchBar.delegate = self
         searchController.delegate = self
         searchController.searchBar.placeholder = "Search link"
@@ -101,32 +101,58 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         let result = self.list[indexPath.row]
         UserDefaults.standard.set(result.link, forKey: "aa")
         
-        let config = UIContextMenuConfiguration(identifier: nil, previewProvider: WebViewController.init) { _ in
-        
-                  let likeAction = UIAction(title: "즐겨찾기", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      try! self.realm.write {
-                          result.likeLink.toggle()
-                      }
-                      collectionView.reloadData()
-                  }
-                  
-                  
-                  let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      collectionView.reloadData()
-                  }
-                      
-                  let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      try! self.realm.write {
-                          self.realm.delete(result)
-                      }
-                      collectionView.reloadData()
-                  }
-                  
-                  return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
-                                children: [likeAction, modifyAction, deleteAction])
-              }
-        
-              return config
+        if result.likeLink == true {
+            let config = UIContextMenuConfiguration(identifier: nil, previewProvider: WebViewController.init) { _ in
+                
+                let likeAction = UIAction(title: "즐겨찾기 해제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    try! self.realm.write {
+                        result.likeLink.toggle()
+                    }
+                    collectionView.reloadData()
+                }
+                
+                let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    collectionView.reloadData()
+                }
+                
+                let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    try! self.realm.write {
+                        self.realm.delete(result)
+                    }
+                    collectionView.reloadData()
+                }
+                
+                return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
+                              children: [likeAction, modifyAction, deleteAction])
+            }
+            return config
+        } else {
+            let config = UIContextMenuConfiguration(identifier: nil, previewProvider: WebViewController.init) { _ in
+                
+                let likeAction = UIAction(title: "즐겨찾기", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    try! self.realm.write {
+                        result.likeLink.toggle()
+                    }
+                    collectionView.reloadData()
+                }
+                
+                let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    collectionView.reloadData()
+                }
+                
+                let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    try! self.realm.write {
+                        self.realm.delete(result)
+                    }
+                    collectionView.reloadData()
+                }
+                
+                return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
+                              children: [likeAction, modifyAction, deleteAction])
+            }
+            return config
+        }
+              
     }
     
    
@@ -185,7 +211,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 }
 
 
-extension HomeViewController: UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate {
+extension HomeViewController:  UISearchBarDelegate, UISearchControllerDelegate {
     func updateSearchResults(for searchController: UISearchController) {
     }
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -203,6 +229,11 @@ extension HomeViewController: UISearchResultsUpdating, UISearchBarDelegate, UISe
             
         }
         
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchController.searchBar.text = ""
+        list = realm.objects(detailCateGory.self)
+        collectionView.reloadData()
+    }
         
         //    func updateSearchResults(for searchController: UISearchController) {
         //
