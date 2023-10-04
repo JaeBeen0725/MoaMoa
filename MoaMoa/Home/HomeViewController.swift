@@ -14,6 +14,7 @@ class HomeViewController: BaseViewController {
 
     let realm = try! Realm()
     var list: Results<detailCateGory>!
+    let searchController = UISearchController(searchResultsController: nil)
     var searchFilter: [String] = []
     let collectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -50,7 +51,7 @@ class HomeViewController: BaseViewController {
         collectionView.reloadData()
     }
     func searchBar() {
-        let searchController = UISearchController(searchResultsController: nil)
+        
         navigationItem.searchController = searchController
         self.definesPresentationContext = true
         searchController.searchResultsUpdater = self
@@ -121,7 +122,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                       collectionView.reloadData()
                   }
                   
-                  return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline, children: [likeAction, modifyAction, deleteAction])
+                  return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
+                                children: [likeAction, modifyAction, deleteAction])
               }
         
               return config
@@ -185,8 +187,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 
 extension HomeViewController: UISearchResultsUpdating, UISearchBarDelegate, UISearchControllerDelegate {
     func updateSearchResults(for searchController: UISearchController) {
-   
-        
+    }
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
             guard let text = searchController.searchBar.text else { return }
             let task = list.where {
@@ -208,7 +209,7 @@ extension HomeViewController: UISearchResultsUpdating, UISearchBarDelegate, UISe
         //        self.searchFilter = self.list.filter{$0.title.contains(text)}
         //    }
         
-    }
+    
 }
 /*
 extension HomeViewController: UIContextMenuInteractionDelegate {
