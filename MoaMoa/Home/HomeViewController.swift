@@ -13,9 +13,10 @@ import SafariServices
 class HomeViewController: BaseViewController {
 
     let realm = try! Realm()
-    var list: Results<detailCateGory>!
+    
+    var result: Results<detailCateGory>!
     let searchController = UISearchController(searchResultsController: nil)
-    var searchFilter: [String] = []
+    
     let collectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -40,7 +41,7 @@ class HomeViewController: BaseViewController {
         collectionView.dataSource = self
         
         addLink() 
-        list = realm.objects(detailCateGory.self)
+        result = realm.objects(detailCateGory.self)
        
         print(realm.configuration.fileURL)
         collectionView.reloadData()
@@ -65,8 +66,8 @@ class HomeViewController: BaseViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
     }
     @objc func addLinkButtonTapped() {
-        let vc = AddLink()
-        vc.modalPresentationStyle = .fullScreen
+        let vc = AddLink(beforeCollectionView: collectionView)
+
        present(vc, animated: true)
     }
 
@@ -93,20 +94,26 @@ class HomeViewController: BaseViewController {
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-      
-        return list.count
+        let data = result.where{
+            $0.onlyAll == true
+        }
+        
+        return data.count
     }
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
-        let result = self.list[indexPath.row]
-        UserDefaults.standard.set(result.link, forKey: "aa")
+        let data = result.where{
+            $0.onlyAll == true
+        }
         
-        if result.likeLink == true {
+         UserDefaults.standard.set(result[indexPath.row].link, forKey: "aa")
+        
+        if result[indexPath.row].likeLink == true {
             let config = UIContextMenuConfiguration(identifier: nil, previewProvider: WebViewController.init) { _ in
                 
                 let likeAction = UIAction(title: "즐겨찾기 해제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     try! self.realm.write {
-                        result.likeLink.toggle()
+                        self.result[indexPath.row].likeLink.toggle()
                     }
                     collectionView.reloadData()
                 }
@@ -116,8 +123,14 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let deleteData = self.result.where {
+                        $0.fk == String(describing: data[indexPath.row]._id)
+                    }
+                    
                     try! self.realm.write {
-                        self.realm.delete(result)
+                        self.realm.delete(deleteData)
+                        self.realm.delete(self.result[indexPath.row])
+                        
                     }
                     collectionView.reloadData()
                 }
@@ -131,7 +144,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 
                 let likeAction = UIAction(title: "즐겨찾기", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     try! self.realm.write {
-                        result.likeLink.toggle()
+                        self.result[indexPath.row].likeLink.toggle()
                     }
                     collectionView.reloadData()
                 }
@@ -141,8 +154,14 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let deleteData = self.result.where {
+                        $0.fk == String(describing: data[indexPath.row]._id)
+                    }
+                    
                     try! self.realm.write {
-                        self.realm.delete(result)
+                        self.realm.delete(deleteData)
+                        self.realm.delete(self.result[indexPath.row])
+                        
                     }
                     collectionView.reloadData()
                 }
@@ -160,15 +179,21 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeCollectionViewCell", for: indexPath) as? HomeCollectionViewCell else {return UICollectionViewCell()}
-        
+        let data = result.where{
+            $0.onlyAll == true
+        }
 
-        cell.testLabel.text = list[indexPath.row].title
+        cell.testLabel.text = data[indexPath.row].title
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = WebViewController()
-        vc.url =  list[indexPath.row].link
+        let data = result.where{
+            $0.onlyAll == true
+        }
+     
+        vc.url =  data[indexPath.row].link
     let nav = UINavigationController(rootViewController: vc)
         
 
@@ -215,15 +240,22 @@ extension HomeViewController:  UISearchBarDelegate, UISearchControllerDelegate {
     func updateSearchResults(for searchController: UISearchController) {
     }
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+            result = realm.objects(detailCateGory.self)
             guard let text = searchController.searchBar.text else { return }
-            let task = list.where {
-                $0.title.contains(text)
+            let data = result.where{
+                $0.onlyAll == true && $0.title.contains(text)
             }
-            
-            if task.count >= 1 {
-                list = task
+            let emptyData = result.where{
+                $0.fk.contains("비어있다")
+            }
+         
+            print(data)
+            if data.count >= 1 {
+                result = data
+               
                 collectionView.reloadData()
             } else {
+                result = emptyData
                 collectionView.reloadData()
             }
             
@@ -231,7 +263,7 @@ extension HomeViewController:  UISearchBarDelegate, UISearchControllerDelegate {
         
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchController.searchBar.text = ""
-        list = realm.objects(detailCateGory.self)
+        result = realm.objects(detailCateGory.self)
         collectionView.reloadData()
     }
         

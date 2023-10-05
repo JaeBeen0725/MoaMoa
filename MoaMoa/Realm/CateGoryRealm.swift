@@ -28,24 +28,25 @@ class detailCateGory: Object {
     
     @Persisted(primaryKey: true) var _id: ObjectId
     
+    @Persisted var fk: String
     @Persisted var link: String
     @Persisted var title: String
     @Persisted var memo: String
     @Persisted var likeLink: Bool
-    @Persisted var AllCategory: String
-    @Persisted var pk: String
+    @Persisted var onlyAll: Bool
     
     @Persisted(originProperty: "detail") var mainTodo: LinkingObjects<CateGoryRealm>
     
-    convenience init( link: String, title: String, memo: String, likeLink: Bool, pk: String, AllCategory: String) {
+    convenience init( fk:String, link: String, title: String, memo: String, likeLink: Bool, onlyAll: Bool) {
         self.init()
         
+        self.fk = fk
         self.link = link
         self.title = title
         self.memo = memo
         self.likeLink = likeLink
-        self.pk = pk
-        self.AllCategory = AllCategory
+        self.onlyAll = onlyAll
+        
     }
     
     

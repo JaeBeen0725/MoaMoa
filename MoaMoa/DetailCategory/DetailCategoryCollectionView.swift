@@ -10,9 +10,9 @@ import RealmSwift
 
 class DetailCategoryCollectionView: BaseViewController {
     let realm = try! Realm()
-    var list: Results<detailCateGory>!
-    var pk = ""
-    
+    var list: Results<CateGoryRealm>!
+ 
+    var categoryPK: ObjectId?
     let collectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -30,21 +30,33 @@ class DetailCategoryCollectionView: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         addLink()
-       print("[====]", pk)
-        list = realm.objects(detailCateGory.self)
+        print(#function)
+        list = realm.objects(CateGoryRealm.self)
         collectionView.reloadData()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        print(#function)
         collectionView.reloadData()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        print(#function)
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print(#function)
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print(#function)
     }
     
     func addLink() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
     }
     @objc func addLinkButtonTapped() {
-        let vc = AddLink()
-        vc.pk = pk
+        let vc = AddLink(categoryPK: categoryPK, beforeCollectionView: collectionView)
         present(vc, animated: true)
         
     }
@@ -72,12 +84,11 @@ extension DetailCategoryCollectionView: UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     
-        let data = list.where {
-            $0.pk == self.pk
+        let data = self.list.where {
+            $0._id == self.categoryPK!
         }
-       
-        print("=====", data)
-        return data.count
+   
+        return data.first!.detail.count
     }
     
     
@@ -86,14 +97,16 @@ extension DetailCategoryCollectionView: UICollectionViewDataSource, UICollection
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeCollectionViewCell", for: indexPath) as? HomeCollectionViewCell else {return UICollectionViewCell()}
         
         let data = list.where {
-            $0.pk == self.pk
+            $0._id == self.categoryPK!
         }
-        cell.testLabel.text = data[indexPath.row].title
+        let detailData = data.first!.detail[indexPath.row]
+        cell.testLabel.text = detailData.title
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
+       
               let config = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
                   
                   let shareAction = UIAction(title: "공유", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
@@ -114,6 +127,16 @@ extension DetailCategoryCollectionView: UICollectionViewDataSource, UICollection
                       
                   let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                       
+                      let data = self.list.where {
+                          $0._id == self.categoryPK!
+                      }
+                  
+                   
+                     let detailData = data.first!.detail[indexPath.row]
+                      try! self.realm.write {
+                          self.realm.delete(detailData)
+                      }
+                      
                   }
                   
                   return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [shareAction, likeAction, addCategoryAction, modifyAction, deleteAction])
@@ -126,5 +149,6 @@ extension DetailCategoryCollectionView: UICollectionViewDataSource, UICollection
     }
     
 }
+
 
 

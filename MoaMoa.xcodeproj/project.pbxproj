@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E35A5B12ACD33D200E2306C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E35A5B02ACD33D200E2306C /* Observable.swift */; };
+		6E35A5B32ACD34D600E2306C /* LinkViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E35A5B22ACD34D600E2306C /* LinkViewModel.swift */; };
 		6E74E5D12AC3D5FE0026627D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E5D02AC3D5FE0026627D /* AppDelegate.swift */; };
 		6E74E5D32AC3D5FE0026627D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E5D22AC3D5FE0026627D /* SceneDelegate.swift */; };
 		6E74E5D52AC3D5FE0026627D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E5D42AC3D5FE0026627D /* HomeViewController.swift */; };
@@ -33,6 +35,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6E35A5B02ACD33D200E2306C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
+		6E35A5B22ACD34D600E2306C /* LinkViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkViewModel.swift; sourceTree = "<group>"; };
 		6E74E5CD2AC3D5FE0026627D /* MoaMoa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoaMoa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E74E5D02AC3D5FE0026627D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6E74E5D22AC3D5FE0026627D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +107,7 @@
 				6E74E5D92AC3D5FF0026627D /* Assets.xcassets */,
 				6E74E5DB2AC3D5FF0026627D /* LaunchScreen.storyboard */,
 				6E74E5DE2AC3D5FF0026627D /* Info.plist */,
+				6E35A5B02ACD33D200E2306C /* Observable.swift */,
 			);
 			path = MoaMoa;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 			children = (
 				6E74E6662AC9C9230026627D /* AddLink.swift */,
 				6EAC0E022ACC23B0009C9D00 /* ModifyLinkViewcontroller.swift */,
+				6E35A5B22ACD34D600E2306C /* LinkViewModel.swift */,
 			);
 			path = Link;
 			sourceTree = "<group>";
@@ -263,6 +269,7 @@
 				6E74E65F2AC960F50026627D /* BaseCollectionViewCell.swift in Sources */,
 				6E74E5D52AC3D5FE0026627D /* HomeViewController.swift in Sources */,
 				6E74E64B2AC95CDB0026627D /* BaseViewController.swift in Sources */,
+				6E35A5B12ACD33D200E2306C /* Observable.swift in Sources */,
 				6E74E5D12AC3D5FE0026627D /* AppDelegate.swift in Sources */,
 				6E74E66C2ACA8AE20026627D /* DetailCategoryCollectionView.swift in Sources */,
 				6E74E6702ACA9F680026627D /* AllCategoryViewController.swift in Sources */,
@@ -275,6 +282,7 @@
 				6E74E6642AC979FC0026627D /* CateGoryRealm.swift in Sources */,
 				6E74E6612AC961CF0026627D /* HomeCollectionViewCell.swift in Sources */,
 				6E74E6752ACAD3750026627D /* WebViewController.swift in Sources */,
+				6E35A5B32ACD34D600E2306C /* LinkViewModel.swift in Sources */,
 				6EAC0E032ACC23B0009C9D00 /* ModifyLinkViewcontroller.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

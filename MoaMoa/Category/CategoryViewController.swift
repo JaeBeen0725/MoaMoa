@@ -107,7 +107,7 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = DetailCategoryCollectionView()
         let allCategoryId = String(describing: realm.objects(CateGoryRealm.self).first?._id)
-        let categoryId = String(describing: realm.objects(CateGoryRealm.self)[indexPath.row]._id)
+   
     
         if indexPath.row == 0 {
             
@@ -115,8 +115,8 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
         } else if indexPath.row == 1 {
             navigationController?.pushViewController(LikeCategoryViewController(), animated: true)
         } else {
-            
-            vc.pk = categoryId
+            vc.categoryPK = list[indexPath.row]._id
+        
             navigationController?.pushViewController(vc, animated: true)
        
          

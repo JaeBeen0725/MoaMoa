@@ -61,7 +61,7 @@ class LikeCategoryViewController: BaseViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
     }
     @objc func addLinkButtonTapped() {
-        navigationController?.pushViewController(AddLink(), animated: true)
+//        navigationController?.pushViewController(AddLink(categoryPK: <#ObjectId?#>), animated: true)
     }
 
     
