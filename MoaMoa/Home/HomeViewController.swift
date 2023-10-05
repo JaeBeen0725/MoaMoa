@@ -126,6 +126,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let vc = ModifyLinkViewcontroller(beforeCollectionView: collectionView)
+
+                    self.present(vc, animated: true)
                     collectionView.reloadData()
                 }
                 
@@ -160,6 +163,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let vc = ModifyLinkViewcontroller(beforeCollectionView: collectionView)
+                    vc.pk = data[indexPath.row]._id
+                    self.present(vc, animated: true)
+                    
                     collectionView.reloadData()
                 }
                 
@@ -190,12 +197,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
            if let identifier = configuration.identifier as? Int {
               
                self.goSafari(indexPath: identifier)
-            
-                
-                
+           
             }
-            
-            
+     
         }
     }
     

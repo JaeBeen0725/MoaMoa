@@ -15,7 +15,7 @@ class AddLink: BaseViewController {
     let linkViewModel = LinkViewModel()
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
-    var pk: String?
+    
     var categoryPK: ObjectId?
     
     let linkTextField = UITextField()
@@ -46,7 +46,7 @@ class AddLink: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         list = realm.objects(CateGoryRealm.self)
-     print("@@@", pk)
+
         addTargetSetup()
         checkBind()
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
@@ -216,3 +216,5 @@ class AddLink: BaseViewController {
     
     
 }
+
+

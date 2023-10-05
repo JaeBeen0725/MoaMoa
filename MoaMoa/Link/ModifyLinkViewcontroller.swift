@@ -1,136 +1,257 @@
-////
-////  kkk.swift
-////  MoaMoa
-////
-////  Created by Jae Oh on 2023/10/03.
-////
 //
-//import UIKit
-//import RealmSwift
+//  kkk.swift
+//  MoaMoa
 //
-//class ModifyLinkViewcontroller: BaseViewController {
-//    
-//    let realm = try! Realm()
-//    var list: Results<CateGoryRealm>!
-//    var pk: String?
-//    
-//    let linkTextView = UITextView()
-//    
-//    let titleLabel = UILabel()
-//    let titleTextView = UITextView()
-//    let memoLabel = UILabel()
-//    let memoTextView = UITextView()
-//    
-//    let cancleButton = UIButton()
-//    let addButton = UIButton()
-//    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        list = realm.objects(CateGoryRealm.self)
-//     print("@@@", pk)
-//        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+//  Created by Jae Oh on 2023/10/03.
+//
+
+import UIKit
+import RealmSwift
+
+class ModifyLinkViewcontroller: BaseViewController {
+ 
+    var detailResult: Results<detailCateGory>!
+    var fk: String?
+    var pk: ObjectId?
+
+
+    
+    let beforeCollectionView: UICollectionView
+    
+    let linkViewModel = LinkViewModel()
+    let realm = try! Realm()
+    var list: Results<CateGoryRealm>!
+    
+    
+    
+    let linkTextField = UITextField()
+    
+    let titleLabel = UILabel()
+    let titleTextField = UITextField()
+    let titleTextCountLabel = UILabel()
+    
+    let memoLabel = UILabel()
+    let memoTextField = UITextField()
+    let memoTextCountLabel = UILabel()
+    
+    let cancelButton = UIButton()
+    let addButton = UIButton()
+    
+    init( beforeCollectionView: UICollectionView) {
+        
+        self.beforeCollectionView = beforeCollectionView
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        list = realm.objects(CateGoryRealm.self)
+        
+        
+        checkBind()
+        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+       cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+       
+        addTargetSetup()
+        showData()
+    }
+   
+    
+    
+    func showData() {
+        if fk == nil {
+            detailResult = realm.objects(detailCateGory.self)
+            let originalData = detailResult.where {
+                $0._id == pk!
+            }
+            print(originalData)
+            linkTextField.text = originalData.first!.link
+            titleTextField.text = originalData.first!.title
+            memoTextField.text = originalData.first!.memo
+            titleTextCountLabel.text = "\(titleTextField.text!.count)/10"
+            memoTextCountLabel.text = "\(memoTextField.text!.count) /10"
+        } else {
+            let data = detailResult.filter {
+                "\($0._id)" == self.fk
+            }
+            linkTextField.text = data.first!.link
+            titleTextField.text = data.first!.title
+            memoTextField.text = data.first!.memo
+            titleTextCountLabel.text = "\(linkViewModel.linkTitle.value.count)/10"
+            memoTextCountLabel.text = "\(linkViewModel.linkMemo.value.count) /10"
+        }
+    }
+
+    
+    func checkBind() {
+        linkViewModel.linkURL.bind { text in
+            self.linkTextField.text = text
+        }
+        linkViewModel.linkTitle.bind { text in
+            self.titleTextField.text = text
+        }
+        linkViewModel.linkMemo.bind { text in
+            self.memoTextField.text = text
+        }
+        
+        linkViewModel.isValid.bind { bool in
+            
+        }
+
+    }
+    
+    
+    
+    func addTargetSetup() {
+        linkTextField.addTarget(self, action: #selector(linkTextChanged), for: .editingChanged)
+        titleTextField.addTarget(self, action: #selector(titleTextChanged), for: .editingChanged)
+        memoTextField.addTarget(self, action: #selector(memoTextChanged), for: .editingChanged)
+    }
+    
+    @objc func linkTextChanged() {
+        linkViewModel.linkURL.value = linkTextField.text ?? ""
+        linkViewModel.checkValidation()
+    }
+    @objc func titleTextChanged() {
+        linkViewModel.linkTitle.value = String(titleTextField.text!.prefix(10))
+    
+        titleTextCountLabel.text = "\(linkViewModel.linkTitle.value.count)/10"
+        linkViewModel.checkValidation()
+
+    }
+    @objc func memoTextChanged() {
+        linkViewModel.linkMemo.value = String(memoTextField.text!.prefix(10))
+        memoTextCountLabel.text = "\(linkViewModel.linkMemo.value.count) /10"
+        linkViewModel.checkValidation()
+
+    }
+    
+    @objc func cancelButtonTapped() {
+       
+        dismiss(animated: true)
+    }
+  
+    
+    @objc func addButtonTapped() {
+        
+//        let allcategory = list.first!.detail
 //        
-////     AddLink(categoryPK: <#T##ObjectId?#>, beforeCollectionView: <#T##UICollectionView#>)
-////        AddLink(beforeCollectionView: <#T##UICollectionView#>)
-//    }
-//    
-//    func existingData() {
-//        
-//    }
-//    
-//    @objc func addButtonTapped() {
-//       let allCategoryId: String = String(describing: realm.objects(CateGoryRealm.self).first!._id)
-//      
-//      //  let data = detailCateGory(link: linkTextView.text, title: titleTextView.text, memo: memoTextView.text, likeLink: false)
-//       let addInCategory = list.filter {
-//            "\($0._id)" == self.pk
+//        let data = detailCateGory(fk: "",link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "" , likeLink: false, onlyAll: true)
+//
+//        if categoryPK == nil {
+//            
+//            try! realm.write{
+//                allcategory.append(data)
+//              
+//            }
+//        } else {
+//            let detailCategory = list.where {
+//                $0._id == categoryPK!
+//            }
+//            try! realm.write{
+//                allcategory.append(data)
+//                let realLink = allcategory.last!._id
+//                detailCategory.first!.detail.append(detailCateGory(fk: String(describing: realLink), link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "", likeLink: false, onlyAll: false))
+//            }
 //        }
-//        
-////        if pk == nil {
-////            
-////            try! realm.write{
-////                list.first?.detail.append(data)
-////            }
-////        } else {
-////            try! realm.write{
-////                list.first?.detail.append(data)
-////                addInCategory.first?.detail.append(data)
-////            }
-////        }
-//        
-//      dismiss(animated: true)
-//    }
-//    
-//    
-//    override func configure() {
-//        super.configure()
-//        view.backgroundColor = .white
-//        view.addSubview(linkTextView)
-//        
-//        view.addSubview(titleLabel)
-//        view.addSubview(titleTextView)
-//        view.addSubview(memoLabel)
-//        view.addSubview(memoTextView)
-//        view.addSubview(cancleButton)
-//        view.addSubview(addButton)
-//        
-//        linkTextView.backgroundColor = .blue
-//        
-//        titleLabel.backgroundColor = .blue
-//        titleTextView.backgroundColor = .blue
-//        memoLabel.backgroundColor = .blue
-//        memoTextView.backgroundColor = .blue
-//        cancleButton.backgroundColor = .blue
-//        addButton.backgroundColor = .blue
-//        
-//        
-//        
-//    }
-//    
-//    override func setContraints() {
-//        super.setContraints()
-//        
-//        linkTextView.snp.makeConstraints { make in
-//            make.size.equalTo(60)
-//            make.top.equalTo(view.safeAreaLayoutGuide).offset(8)
-//            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
-//        }
-//       
-//        
-//        titleLabel.snp.makeConstraints { make in
-//            make.size.equalTo(60)
-//            make.top.equalTo(linkTextView.snp.bottom).offset(8)
-//            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
-//        }
-//        titleTextView.snp.makeConstraints { make in
-//            make.size.equalTo(60)
-//            make.top.equalTo(titleLabel.snp.bottom).offset(8)
-//            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
-//        }
-//        
-//        memoLabel.snp.makeConstraints { make in
-//            make.size.equalTo(60)
-//            make.top.equalTo(titleTextView.snp.bottom).offset(8)
-//            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
-//        }
-//        memoTextView.snp.makeConstraints { make in
-//            make.size.equalTo(60)
-//            make.top.equalTo(memoLabel.snp.bottom).offset(8)
-//            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
-//        }
-//        
-//        cancleButton.snp.makeConstraints { make in
-//            make.height.equalTo(50)
-//            make.leading.bottom.equalTo(view.safeAreaLayoutGuide)
-//            make.width.equalTo(50)
-//        }
-//        
-//        addButton.snp.makeConstraints { make in
-//            make.height.equalTo(50)
-//            make.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
-//            make.width.equalTo(50)
-//        }
-//    }
-//    
-//    
-//}
+//         beforeCollectionView.reloadData()
+      dismiss(animated: true)
+    }
+    
+    
+    override func configure() {
+        super.configure()
+        view.backgroundColor = .white
+        view.addSubview(linkTextField)
+        
+        view.addSubview(titleLabel)
+        view.addSubview(titleTextField)
+        view.addSubview(titleTextCountLabel)
+        view.addSubview(memoLabel)
+        view.addSubview(memoTextField)
+        view.addSubview(memoTextCountLabel)
+        view.addSubview(cancelButton)
+        view.addSubview(addButton)
+        
+        linkTextField.backgroundColor = .blue
+        
+        titleLabel.backgroundColor = .blue
+        titleTextField.backgroundColor = .blue
+        memoLabel.backgroundColor = .blue
+        memoTextField.backgroundColor = .blue
+        cancelButton.backgroundColor = .brown
+        addButton.backgroundColor = .blue
+        titleTextCountLabel.backgroundColor = .blue
+        memoTextCountLabel.backgroundColor = .blue
+        
+    }
+    
+    override func setContraints() {
+        super.setContraints()
+        
+        linkTextField.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(8)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
+        }
+       
+        
+        titleLabel.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.top.equalTo(linkTextField.snp.bottom).offset(8)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
+        }
+        titleTextField.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.top.equalTo(titleLabel.snp.bottom).offset(8)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
+        }
+        titleTextCountLabel.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.leading.equalTo(titleTextField.snp.trailing).offset(16)
+            make.top.equalTo(titleLabel.snp.bottom).offset(8)
+        }
+        
+        
+        memoLabel.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.top.equalTo(titleTextField.snp.bottom).offset(8)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
+        }
+        memoTextField.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.top.equalTo(memoLabel.snp.bottom).offset(8)
+            make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
+        }
+        memoTextCountLabel.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.leading.equalTo(memoTextField.snp.trailing).offset(16)
+            make.top.equalTo(memoLabel.snp.bottom).offset(8)
+        }
+        
+        cancelButton.snp.makeConstraints { make in
+            make.height.equalTo(200)
+            make.leading.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.width.equalTo(200)
+        }
+        
+        addButton.snp.makeConstraints { make in
+            make.height.equalTo(50)
+            make.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.width.equalTo(50)
+        }
+    }
+    
+    
+}
+
+
+
+
+
