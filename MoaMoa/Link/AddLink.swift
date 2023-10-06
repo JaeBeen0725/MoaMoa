@@ -108,7 +108,7 @@ class AddLink: BaseViewController {
         
         let allcategory = list.first!.detail
         
-        let data = detailCateGory(fk: "",link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "" , likeLink: false, onlyAll: true)
+        let data = detailCateGory(link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "" , likeLink: false, onlyAll: true)
 
         if categoryPK == nil {
             
@@ -123,7 +123,8 @@ class AddLink: BaseViewController {
             try! realm.write{
                 allcategory.append(data)
                 let realLink = allcategory.last!._id
-                detailCategory.first!.detail.append(detailCateGory(fk: String(describing: realLink), link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "", likeLink: false, onlyAll: false))
+                detailCategory.first!.detail.append(detailCateGory(link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "", likeLink: false, onlyAll: false))
+              detailCategory.first!.detail.last!.fk = realLink
             }
         }
          beforeCollectionView.reloadData()

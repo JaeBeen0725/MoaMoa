@@ -28,7 +28,7 @@ class detailCateGory: Object {
     
     @Persisted(primaryKey: true) var _id: ObjectId
     
-    @Persisted var fk: String
+    @Persisted var fk: ObjectId
     @Persisted var link: String
     @Persisted var title: String
     @Persisted var memo: String
@@ -37,10 +37,10 @@ class detailCateGory: Object {
     
     @Persisted(originProperty: "detail") var mainTodo: LinkingObjects<CateGoryRealm>
     
-    convenience init( fk:String, link: String, title: String, memo: String, likeLink: Bool, onlyAll: Bool) {
+    convenience init(link: String, title: String, memo: String, likeLink: Bool, onlyAll: Bool) {
         self.init()
         
-        self.fk = fk
+        self.fk = _id
         self.link = link
         self.title = title
         self.memo = memo

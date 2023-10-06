@@ -122,7 +122,7 @@ extension AllCategoryViewController: UICollectionViewDataSource, UICollectionVie
                 
                 let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     let deleteData = self.result.where {
-                        $0.fk == String(describing: data[indexPath.row]._id)
+                        $0.fk == data[indexPath.row]._id
                     }
                     
                     try! self.realm.write {
@@ -153,7 +153,7 @@ extension AllCategoryViewController: UICollectionViewDataSource, UICollectionVie
                 
                 let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     let deleteData = self.result.where {
-                        $0.fk == String(describing: data[indexPath.row]._id)
+                        $0.fk == data[indexPath.row]._id
                     }
                     
                     try! self.realm.write {

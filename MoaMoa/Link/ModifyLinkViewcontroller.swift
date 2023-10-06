@@ -9,20 +9,17 @@ import UIKit
 import RealmSwift
 
 class ModifyLinkViewcontroller: BaseViewController {
- 
-    var detailResult: Results<detailCateGory>!
-    var fk: String?
-    var pk: ObjectId?
-
-
     
+    
+    let realm = try! Realm()
+    var detailResult: Results<detailCateGory>!
+    var list: Results<CateGoryRealm>!
+    var fk: ObjectId?
+
     let beforeCollectionView: UICollectionView
     
     let linkViewModel = LinkViewModel()
-    let realm = try! Realm()
-    var list: Results<CateGoryRealm>!
-    
-    
+
     
     let linkTextField = UITextField()
     
@@ -52,10 +49,10 @@ class ModifyLinkViewcontroller: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         list = realm.objects(CateGoryRealm.self)
-        
-        
+        detailResult = realm.objects(detailCateGory.self)
+      print("%%%%%%%%%%%%%%%%%", fk)
         checkBind()
-        addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
        
         addTargetSetup()
@@ -63,29 +60,19 @@ class ModifyLinkViewcontroller: BaseViewController {
     }
    
     
-    
     func showData() {
-        if fk == nil {
-            detailResult = realm.objects(detailCateGory.self)
-            let originalData = detailResult.where {
-                $0._id == pk!
-            }
-            print(originalData)
+        
+        let originalData = detailResult.where {
+            $0._id == fk!
+        }
+
+           // print(originalData)
             linkTextField.text = originalData.first!.link
             titleTextField.text = originalData.first!.title
             memoTextField.text = originalData.first!.memo
             titleTextCountLabel.text = "\(titleTextField.text!.count)/10"
             memoTextCountLabel.text = "\(memoTextField.text!.count) /10"
-        } else {
-            let data = detailResult.filter {
-                "\($0._id)" == self.fk
-            }
-            linkTextField.text = data.first!.link
-            titleTextField.text = data.first!.title
-            memoTextField.text = data.first!.memo
-            titleTextCountLabel.text = "\(linkViewModel.linkTitle.value.count)/10"
-            memoTextCountLabel.text = "\(linkViewModel.linkMemo.value.count) /10"
-        }
+      
     }
 
     
@@ -138,30 +125,25 @@ class ModifyLinkViewcontroller: BaseViewController {
     }
   
     
-    @objc func addButtonTapped() {
+    @objc func changeButtonTapped() {
+       
+        let data = detailResult.where {
+            $0.fk == fk!
+        }
+        print(data)
+    
+ 
+        try! realm.write {
+                for i in 0...data.count - 1{
+                    data[i].link = linkTextField.text!
+                    data[i].title = titleTextField.text!
+                    data[i].memo = memoTextField.text ?? ""
+                }
+            }
         
-//        let allcategory = list.first!.detail
-//        
-//        let data = detailCateGory(fk: "",link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "" , likeLink: false, onlyAll: true)
-//
-//        if categoryPK == nil {
-//            
-//            try! realm.write{
-//                allcategory.append(data)
-//              
-//            }
-//        } else {
-//            let detailCategory = list.where {
-//                $0._id == categoryPK!
-//            }
-//            try! realm.write{
-//                allcategory.append(data)
-//                let realLink = allcategory.last!._id
-//                detailCategory.first!.detail.append(detailCateGory(fk: String(describing: realLink), link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "", likeLink: false, onlyAll: false))
-//            }
-//        }
-//         beforeCollectionView.reloadData()
-      dismiss(animated: true)
+        
+        beforeCollectionView.reloadData()
+        dismiss(animated: true)
     }
     
     

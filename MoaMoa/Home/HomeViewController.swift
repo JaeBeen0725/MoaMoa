@@ -107,7 +107,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             $0.onlyAll == true
         }
         let detailData = self.result.where {
-            $0.fk == String(describing: data[indexPath.row]._id)
+            $0.fk == data[indexPath.row]._id
         }
         UserDefaults.standard.set(data[indexPath.row].link, forKey: "aa")
         
@@ -137,7 +137,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                     
                     try! self.realm.write {
                         self.realm.delete(detailData)
-                        self.realm.delete(data[indexPath.row])
+                      
                         
                     }
                     collectionView.reloadData()
@@ -164,7 +164,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     let vc = ModifyLinkViewcontroller(beforeCollectionView: collectionView)
-                    vc.pk = data[indexPath.row]._id
+                    vc.fk = data[indexPath.row]._id
+
                     self.present(vc, animated: true)
                     
                     collectionView.reloadData()
@@ -172,12 +173,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 
                 let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     let deleteData = self.result.where {
-                        $0.fk == String(describing: data[indexPath.row]._id)
+                        $0.fk == data[indexPath.row]._id
                     }
                     
                     try! self.realm.write {
                         self.realm.delete(deleteData)
-                        self.realm.delete(self.result[indexPath.row])
+                     
                         
                     }
                     collectionView.reloadData()
@@ -244,7 +245,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 $0.onlyAll == true && $0.title.contains(text)
             }
             let emptyData = result.where{
-                $0.fk.contains("비어있다")
+                $0.link.contains("$%^$&")
             }
             
             print(data)
