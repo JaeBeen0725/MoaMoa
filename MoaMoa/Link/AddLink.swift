@@ -8,9 +8,19 @@
 import UIKit
 import RealmSwift
 
+protocol RealmPassDataDelegate{
+    func receviePkData(data: ObjectId)
+}
+
+protocol ReloadDataDelegate{
+    func recevieCollectionViewReloadData()
+    
+}
+
+
 class AddLink: BaseViewController {
     
-    let beforeCollectionView: UICollectionView
+    var delegate: ReloadDataDelegate?
     
     let linkViewModel = LinkViewModel()
     let realm = try! Realm()
@@ -30,14 +40,12 @@ class AddLink: BaseViewController {
     
     let cancelButton = UIButton()
     let addButton = UIButton()
-    
-    init(categoryPK: ObjectId? = nil, beforeCollectionView: UICollectionView) {
-        self.categoryPK = categoryPK
-        self.beforeCollectionView = beforeCollectionView
-        super.init(nibName: nil, bundle: nil)
-    }
-    
 
+    init(delegate: ReloadDataDelegate? = nil, categoryPK: ObjectId? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        self.delegate = delegate
+        self.categoryPK = categoryPK
+    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -53,7 +61,10 @@ class AddLink: BaseViewController {
        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
        
     }
-    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+    }
     
     func checkBind() {
         linkViewModel.linkURL.bind { text in
@@ -127,7 +138,7 @@ class AddLink: BaseViewController {
               detailCategory.first!.detail.last!.fk = realLink
             }
         }
-         beforeCollectionView.reloadData()
+        delegate!.recevieCollectionViewReloadData()
       dismiss(animated: true)
     }
     
@@ -217,5 +228,4 @@ class AddLink: BaseViewController {
     
     
 }
-
 

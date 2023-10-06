@@ -12,7 +12,7 @@ class AddCategoryViewController: BaseViewController {
 
     let titleText = UITextView()
     let addButton = UIButton()
-    
+    var delegate: ReloadDataDelegate?
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
     
@@ -45,9 +45,11 @@ class AddCategoryViewController: BaseViewController {
         try! realm.write{
             realm.add(data)
         }
-        navigationController?.popViewController(animated: true)
+        delegate?.recevieCollectionViewReloadData()
+       dismiss(animated: true)
         
     }
 
-    
 }
+
+

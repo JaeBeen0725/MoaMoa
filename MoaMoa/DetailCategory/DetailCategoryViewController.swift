@@ -8,12 +8,12 @@
 import UIKit
 import RealmSwift
 
-class DetailCategoryCollectionView: BaseViewController {
+class DetailCategoryViewController: BaseViewController {
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
  
     var categoryPK: ObjectId?
-    let collectionView = {
+    let detailCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         let spacing : CGFloat = 8
@@ -27,36 +27,28 @@ class DetailCategoryCollectionView: BaseViewController {
         return view
     }()
     
+    init( categoryPK: ObjectId? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        self.categoryPK = categoryPK
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         addLink()
         print(#function)
         list = realm.objects(CateGoryRealm.self)
-        collectionView.reloadData()
+        detailCollectionView.reloadData()
     }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print(#function)
-        collectionView.reloadData()
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        print(#function)
-    }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        print(#function)
-    }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        print(#function)
-    }
-    
+   
     func addLink() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
     }
     @objc func addLinkButtonTapped() {
-        let vc = AddLink(categoryPK: categoryPK, beforeCollectionView: collectionView)
+        let vc = AddLink(delegate: self, categoryPK: categoryPK)
         present(vc, animated: true)
         
     }
@@ -64,23 +56,23 @@ class DetailCategoryCollectionView: BaseViewController {
     override func configure() {
         super.configure()
         
-        view.addSubview(collectionView)
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        view.addSubview(detailCollectionView)
+        detailCollectionView.dataSource = self
+        detailCollectionView.delegate = self
     }
     
     
     override func setContraints() {
         super.setContraints()
         
-        collectionView.snp.makeConstraints { make in
+        detailCollectionView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
 }
 
-extension DetailCategoryCollectionView: UICollectionViewDataSource, UICollectionViewDelegate {
+extension DetailCategoryViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     
@@ -136,7 +128,7 @@ extension DetailCategoryCollectionView: UICollectionViewDataSource, UICollection
                       try! self.realm.write {
                           self.realm.delete(detailData)
                       }
-                      
+                      collectionView.reloadData()
                   }
                   
                   return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [shareAction, likeAction, addCategoryAction, modifyAction, deleteAction])
@@ -150,5 +142,12 @@ extension DetailCategoryCollectionView: UICollectionViewDataSource, UICollection
     
 }
 
+extension DetailCategoryViewController: ReloadDataDelegate {
+    func recevieCollectionViewReloadData() {
+        detailCollectionView.reloadData()
+    }
+    
+    
+}
 
 

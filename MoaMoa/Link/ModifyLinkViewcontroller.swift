@@ -14,9 +14,8 @@ class ModifyLinkViewcontroller: BaseViewController {
     let realm = try! Realm()
     var detailResult: Results<detailCateGory>!
     var list: Results<CateGoryRealm>!
-    var fk: ObjectId?
-
-    let beforeCollectionView: UICollectionView
+    var fk: ObjectId
+    var delegate: ReloadDataDelegate?
     
     let linkViewModel = LinkViewModel()
 
@@ -34,13 +33,12 @@ class ModifyLinkViewcontroller: BaseViewController {
     let cancelButton = UIButton()
     let addButton = UIButton()
     
-    init( beforeCollectionView: UICollectionView) {
-        
-        self.beforeCollectionView = beforeCollectionView
+    init(fk: ObjectId, delegate: ReloadDataDelegate? = nil) {
+        self.fk = fk
+        self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
+       
     }
-    
-
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -63,7 +61,7 @@ class ModifyLinkViewcontroller: BaseViewController {
     func showData() {
         
         let originalData = detailResult.where {
-            $0._id == fk!
+            $0._id == fk
         }
 
            // print(originalData)
@@ -128,7 +126,7 @@ class ModifyLinkViewcontroller: BaseViewController {
     @objc func changeButtonTapped() {
        
         let data = detailResult.where {
-            $0.fk == fk!
+            $0.fk == fk
         }
         print(data)
     
@@ -142,7 +140,7 @@ class ModifyLinkViewcontroller: BaseViewController {
             }
         
         
-        beforeCollectionView.reloadData()
+        delegate?.recevieCollectionViewReloadData()
         dismiss(animated: true)
     }
     

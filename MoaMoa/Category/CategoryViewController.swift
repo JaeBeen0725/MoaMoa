@@ -12,7 +12,7 @@ class CategoryViewController: BaseViewController {
     
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
-  
+    var delegate: ReloadDataDelegate?
     let categoryCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -32,17 +32,15 @@ class CategoryViewController: BaseViewController {
         list = realm.objects(CateGoryRealm.self)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addCategory))
-        categoryCollectionView.reloadData()
+        
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        categoryCollectionView.reloadData()
-    }
+  
     
     @objc func addCategory() {
-        
-        navigationController?.pushViewController(AddCategoryViewController(), animated: true)
+        let vc =  AddCategoryViewController()
+        vc.delegate = self
+       
+        present( vc, animated: true)
     }
     
     
@@ -105,13 +103,12 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = DetailCategoryCollectionView()
-        let allCategoryId = String(describing: realm.objects(CateGoryRealm.self).first?._id)
+        let vc = DetailCategoryViewController()
    
     
         if indexPath.row == 0 {
             
-            navigationController?.pushViewController(AllCategoryViewController(), animated: true)
+            navigationController?.pushViewController(HomeViewController(), animated: true)
         } else if indexPath.row == 1 {
             navigationController?.pushViewController(LikeCategoryViewController(), animated: true)
         } else {
@@ -124,6 +121,12 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
         
     }
     
+}
+
+extension CategoryViewController: ReloadDataDelegate {
+    func recevieCollectionViewReloadData() {
+        categoryCollectionView.reloadData()
+    }
     
     
 }

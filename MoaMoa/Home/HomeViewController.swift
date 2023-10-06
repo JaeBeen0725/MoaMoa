@@ -10,6 +10,8 @@ import SnapKit
 import RealmSwift
 import SafariServices
 
+
+
 class HomeViewController: BaseViewController, UIViewControllerTransitioningDelegate {
 
     let realm = try! Realm()
@@ -17,7 +19,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     var result: Results<detailCateGory>!
     let searchController = UISearchController(searchResultsController: nil)
     
-    let collectionView = {
+    let homeCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         let spacing : CGFloat = 8
@@ -37,20 +39,20 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         searchBar()
-        collectionView.delegate = self
-        collectionView.dataSource = self
+        homeCollectionView.delegate = self
+        homeCollectionView.dataSource = self
         
         addLink() 
         result = realm.objects(detailCateGory.self)
        
         print(realm.configuration.fileURL)
-        collectionView.reloadData()
+        
     }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        collectionView.reloadData()
+        homeCollectionView.reloadData()
     }
+   
     func searchBar() {
         
         navigationItem.searchController = searchController
@@ -63,26 +65,28 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     }
     
     func addLink() {
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
     }
     @objc func addLinkButtonTapped() {
-        let vc = AddLink(beforeCollectionView: collectionView)
-
+        let vc = AddLink(delegate: self, categoryPK: nil)
+    
+        
        present(vc, animated: true)
     }
 
     
     override func configure() {
         super.configure()
-        view.addSubview(collectionView)
-        collectionView.backgroundColor = .brown
+        view.addSubview(homeCollectionView)
+        homeCollectionView.backgroundColor = .brown
         
     }
 
     override func setContraints() {
         super.setContraints()
         
-        collectionView.snp.makeConstraints { make in
+        homeCollectionView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
@@ -126,9 +130,19 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = ModifyLinkViewcontroller(beforeCollectionView: collectionView)
+                    let vc = ModifyLinkViewcontroller(fk: data[indexPath.row]._id, delegate: self)
 
                     self.present(vc, animated: true)
+                    
+                }
+                
+                let addToAnotherCategory = UIAction(title: "카테고리에 추가", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    
+                    let vc = AddToAnotherCategoryViewController(fk: data[indexPath.row]._id)
+                    
+//                    self.present(vc, animated: true)
+                    self.navigationController?.pushViewController(vc, animated: false)
+
                     collectionView.reloadData()
                 }
                 
@@ -144,7 +158,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
-                              children: [likeAction, modifyAction, deleteAction])
+                              children: [likeAction, modifyAction, addToAnotherCategory,deleteAction])
             }
             return config
         } else {
@@ -163,11 +177,18 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = ModifyLinkViewcontroller(beforeCollectionView: collectionView)
-                    vc.fk = data[indexPath.row]._id
+                    let vc = ModifyLinkViewcontroller(fk: data[indexPath.row]._id, delegate: self)
 
                     self.present(vc, animated: true)
+                }
+                let addToAnotherCategory = UIAction(title: "카테고리에 추가", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     
+                    
+                    let vc = AddToAnotherCategoryViewController(fk: data[indexPath.row]._id)
+                    
+//                    self.present(vc, animated: true)
+                    self.navigationController?.pushViewController(vc, animated: false)
+
                     collectionView.reloadData()
                 }
                 
@@ -185,7 +206,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
-                              children: [likeAction, modifyAction, deleteAction])
+                              children: [likeAction, modifyAction,addToAnotherCategory, deleteAction])
             }
             return config
         }
@@ -252,10 +273,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             if data.count >= 1 {
                 result = data
                 
-                collectionView.reloadData()
+                homeCollectionView.reloadData()
             } else {
                 result = emptyData
-                collectionView.reloadData()
+                homeCollectionView.reloadData()
             }
             
         }
@@ -263,10 +284,18 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
             searchController.searchBar.text = ""
             result = realm.objects(detailCateGory.self)
-            collectionView.reloadData()
+            homeCollectionView.reloadData()
         }
         
         
     }
     
-
+extension HomeViewController: ReloadDataDelegate {
+    func recevieCollectionViewReloadData() {
+    
+            homeCollectionView.reloadData()
+        
+    }
+    
+    
+}
