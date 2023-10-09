@@ -9,19 +9,35 @@ import UIKit
 
 class HomeCollectionViewCell: BaseCollectionViewCell {
     
-    let testLabel = UILabel()
-    
-
+    let thumbnailImageView = UIImageView()
+    let titleLabel = UILabel()
+    let memoLabel = UILabel()
+   
     
     override func configure() {
-        contentView.addSubview(testLabel)
-//        contentView.translatesAutoresizingMaskIntoConstraints = fals
+        contentView.addSubview(thumbnailImageView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(memoLabel)
+
         contentView.backgroundColor = .cyan
     }
     
     override func setConstraints() {
-        testLabel.snp.makeConstraints { make in
-            make.edges.equalTo(self.safeAreaLayoutGuide)
+        thumbnailImageView.snp.makeConstraints { make in
+            make.size.equalTo(self.safeAreaLayoutGuide).multipliedBy(0.4)
+            make.top.equalTo(self.safeAreaLayoutGuide)
+            make.centerX.equalToSuperview()
         }
+        titleLabel.snp.makeConstraints { make in
+            make.height.equalTo(35)
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide)
+            make.top.equalTo(thumbnailImageView.snp.bottom)
+        }
+        titleLabel.snp.makeConstraints { make in
+            make.height.equalTo(35)
+            make.leading.trailing.equalTo(self.safeAreaLayoutGuide)
+            make.top.equalTo(titleLabel.snp.bottom)
+        }
+        
     }
 }

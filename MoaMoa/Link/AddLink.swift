@@ -59,12 +59,9 @@ class AddLink: BaseViewController {
         checkBind()
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-       
+        hideKeyboard()
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-    }
+ 
     
     func checkBind() {
         linkViewModel.linkURL.bind { text in
@@ -78,7 +75,13 @@ class AddLink: BaseViewController {
         }
         
         linkViewModel.isValid.bind { bool in
-            
+            if bool {
+                print("성공")
+                self.addButton.isEnabled = bool
+            } else {
+                print("실패")
+                self.addButton.isEnabled = bool
+            }
         }
 
     }
@@ -139,6 +142,7 @@ class AddLink: BaseViewController {
             }
         }
         delegate!.recevieCollectionViewReloadData()
+        NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
       dismiss(animated: true)
     }
     

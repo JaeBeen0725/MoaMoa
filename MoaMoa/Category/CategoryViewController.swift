@@ -33,12 +33,13 @@ class CategoryViewController: BaseViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addCategory))
         
+        
     }
   
     
     @objc func addCategory() {
-        let vc =  AddCategoryViewController()
-        vc.delegate = self
+        let vc =  AddCategoryViewController(delegate: self)
+        
        
         present( vc, animated: true)
     }
@@ -86,12 +87,19 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
             let config = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
                 
                 
-                let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    
+                let modifyAction = UIAction(title: "이름변경", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let vc = ChangeCategoryName(delegate: self, categoryPk: self.list[indexPath.row]._id)
+                    self.present(vc, animated: true)
                 }
                 
                 let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let data = self.list[indexPath.row].detail
                     
+                    try! self.realm.write{
+                        self.realm.delete(data)
+                        self.realm.delete(self.list[indexPath.row])
+                    }
+                    collectionView.reloadData()
                 }
                 
                 return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [modifyAction, deleteAction])
@@ -107,8 +115,8 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
    
     
         if indexPath.row == 0 {
-            
-            navigationController?.pushViewController(HomeViewController(), animated: true)
+            let vc = HomeViewController()
+            navigationController?.pushViewController(vc, animated: true)
         } else if indexPath.row == 1 {
             navigationController?.pushViewController(LikeCategoryViewController(), animated: true)
         } else {

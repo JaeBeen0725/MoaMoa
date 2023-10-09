@@ -55,6 +55,7 @@ class ModifyLinkViewcontroller: BaseViewController {
        
         addTargetSetup()
         showData()
+        hideKeyboard()
     }
    
     
@@ -138,7 +139,6 @@ class ModifyLinkViewcontroller: BaseViewController {
                     data[i].memo = memoTextField.text ?? ""
                 }
             }
-        
         
         delegate?.recevieCollectionViewReloadData()
         dismiss(animated: true)

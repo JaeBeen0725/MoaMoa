@@ -54,8 +54,8 @@ class AddToAnotherCategoryViewController: CategoryViewController {
                 list[indexPath.row + 2].detail.last!.fk = data.first!._id
             }
         }
-        
-        navigationController?.popViewController(animated: false)
+        dismiss(animated: true)
+//        navigationController?.popViewController(animated: false)
     }
     
 }

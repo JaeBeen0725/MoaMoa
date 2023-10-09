@@ -14,7 +14,16 @@ class AddCategoryViewController: BaseViewController {
     let addButton = UIButton()
     var delegate: ReloadDataDelegate?
     let realm = try! Realm()
-    var list: Results<CateGoryRealm>!
+    
+    
+    init(delegate: ReloadDataDelegate? = nil) {
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +47,7 @@ class AddCategoryViewController: BaseViewController {
         
         
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        hideKeyboard()
     }
     
     @objc func addButtonTapped() {

@@ -7,12 +7,15 @@
 
 import UIKit
 import RealmSwift
+import SafariServices
 
-class LikeCategoryViewController: BaseViewController {
+class LikeCategoryViewController: BaseViewController, UIViewControllerTransitioningDelegate {
 
     let realm = try! Realm()
-    var list: Results<detailCateGory>!
-    let collectionView = {
+    var list: Results<CateGoryRealm>!
+    var detailCategory: Results<detailCateGory>!
+  
+    let detailCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         let spacing : CGFloat = 8
@@ -23,63 +26,34 @@ class LikeCategoryViewController: BaseViewController {
         layout.minimumInteritemSpacing = spacing
         layout.minimumLineSpacing = spacing
         
-        
-      
         return view
     }()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        list = realm.objects(detailCateGory.self)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-      
-        searchBar()
-        addLink()
-       
-          
-      
-        
-        collectionView.reloadData()
-        
-       
+     
+     
+        list = realm.objects(CateGoryRealm.self)
+        detailCollectionView.reloadData()
+        detailCategory = realm.objects(detailCateGory.self)
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        collectionView.reloadData()
-    }
-    func searchBar() {
-        let searchController = UISearchController(searchResultsController: nil)
-        navigationItem.searchController = searchController
-        searchController.searchBar.placeholder = "Search link"
-   
-    }
-    
-    func addLink() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
-    }
-    @objc func addLinkButtonTapped() {
-
-    }
-
-    
+  
     override func configure() {
         super.configure()
-        view.addSubview(collectionView)
-        collectionView.backgroundColor = .brown
         
+        view.addSubview(detailCollectionView)
+        detailCollectionView.dataSource = self
+        detailCollectionView.delegate = self
     }
-
+    
+    
     override func setContraints() {
         super.setContraints()
-    
-        collectionView.snp.makeConstraints { make in
+        
+        detailCollectionView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
-        
-    
     }
     
 }
@@ -87,66 +61,166 @@ class LikeCategoryViewController: BaseViewController {
 extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        let data = list.where {
-            $0.likeLink == true
+    
+        let data = self.detailCategory.where {
+            $0.onlyAll == true && $0.likeLink == true
         }
-        print(data)
-        
-        return  data.count
+   
+        return data.count
     }
+    
     
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeCollectionViewCell", for: indexPath) as? HomeCollectionViewCell else {return UICollectionViewCell()}
-        let data = list.where {
-            $0.likeLink == true
-        }
         
-        cell.testLabel.text = data[indexPath.row].title
+        let data = self.detailCategory.where {
+            $0.onlyAll == true && $0.likeLink == true
+        }
+        let detailData = data.reversed()[indexPath.row]
+        if let existingMetaData = MetaDataCache.retrieve(urlString: detailData.link) {
+            
+            existingMetaData.imageProvider?.loadObject(ofClass: UIImage.self) { (image, error) in
+                    guard error == nil else {
+                        return
+                    }
+                    if let image = image as? UIImage {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.thumbnailImageView.image = image
+                            cell.titleLabel.text = existingMetaData.title
+                            
+                        }
+
+                    } else {
+                        print("no image available")
+                    }
+                }
+            
+                
+            } else {
+                MetaData.fetchMetaData(for: URL(string: detailData.link)!) { metadata in
+                    
+                    switch metadata {
+                    case .success(let metadata):
+                        if let imageProvider = metadata.imageProvider {
+                            metadata.iconProvider = imageProvider
+                            
+                            imageProvider.loadObject(ofClass: UIImage.self) { (image, error) in
+                                guard error == nil else {
+                                    return
+                                }
+                                if let image = image as? UIImage {
+                                    
+                                    DispatchQueue.main.async {
+                                        
+                                        cell.thumbnailImageView.image = image
+                                        cell.titleLabel.text = metadata.title
+
+                                    }
+
+                                } else {
+                                    print("no image available")
+                                }
+                            }
+                        }
+                        
+                    case .failure(let error):
+//                        self.handleFailureFetchMetaData(for: error)
+                        print(error)
+                    }
+                }
+            }
+        
+       
+       
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
-              let config = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-                  
-                  let shareAction = UIAction(title: "공유", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      
-                  }
-                  
-                  let likeAction = UIAction(title: "즐겨찾기", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      
-                  }
-                  
-                  let addCategoryAction = UIAction(title: "카테고리에 추가", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      
-                  }
-                  
-                  let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      
-                  }
-                      
-                  let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                      
-                  }
-                  
-                  return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [shareAction, likeAction, addCategoryAction, modifyAction, deleteAction])
-              }
-              return config
+        let data = detailCategory.where{
+            $0.onlyAll == true
+        }
+        let resultData = data.reversed()[indexPath.row]
+        let linkLike =  data.reversed()[indexPath.row].likeLink
+        let detailData = detailCategory.where {
+            $0.fk == resultData._id
+        }
+       
+        
+        UserDefaults.standard.set(resultData.link, forKey: "aa")
+            
+            let config = UIContextMenuConfiguration(identifier: indexPath.row as Int as NSCopying, previewProvider: WebViewController.init) { _ in
+                
+                let likeAction = UIAction(title: linkLike ? "즐겨찾기 해제" : "즐겨찾기", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                        try! self.realm.write {
+                            
+                            for i in 0...detailData.count - 1{
+                                detailData[i].likeLink.toggle()
+                            }
+                        }
+                        collectionView.reloadData()
+                    }
+                
+                let modifyAction = UIAction(title: "편집", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let vc = ModifyLinkViewcontroller(fk: resultData._id, delegate: self)
+
+                    self.present(vc, animated: true)
+                }
+                let addToAnotherCategory = UIAction(title: "카테고리에 추가", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    
+                    
+                    let vc = AddToAnotherCategoryViewController(fk: resultData._id)
+                    
+                    self.present(vc, animated: true)
+  
+                }
+              
+                let realdeletAction = UIAction(title: "삭제", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { _ in
+                    let deleteData = self.detailCategory.where {
+                        $0.fk == resultData._id
+                    }
+                    
+                    try! self.realm.write {
+                        self.realm.delete(deleteData)
+           
+                    }
+                    collectionView.reloadData()
+                }
+                let parentsRealdeletMenu = UIMenu(options: .displayInline, children: [realdeletAction])
+                return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
+                              children: [likeAction, modifyAction,addToAnotherCategory, parentsRealdeletMenu])
+            }
+        
+            return config
+      
     }
     
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let vc = WebViewController()
-//        vc.url =  list[indexPath.row].link
-//    let nav = UINavigationController(rootViewController: vc)
-//        
-//
-//        present(nav, animated: true)
-//       
-//    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        goSafari(indexPath: indexPath.row)
+                
+    }
     
+    func goSafari(indexPath : Int) {
+        let data = self.detailCategory.where{
+            $0.onlyAll == true
+        }
+        guard let url = URL(string: data.reversed()[indexPath].link  ) else { return }
+         let safariVC = SFSafariViewController(url: url)
+         safariVC.transitioningDelegate = self
+         safariVC.modalPresentationStyle = .pageSheet
+         
+         self.present(safariVC, animated: true, completion: nil)
+    }
     
+}
+
+extension LikeCategoryViewController: ReloadDataDelegate {
+    func recevieCollectionViewReloadData() {
+        detailCollectionView.reloadData()
+    }
     
     
 }
