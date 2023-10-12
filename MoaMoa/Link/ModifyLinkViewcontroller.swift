@@ -105,7 +105,7 @@ class ModifyLinkViewcontroller: BaseViewController {
         linkViewModel.checkValidation()
     }
     @objc func titleTextChanged() {
-        linkViewModel.linkTitle.value = String(titleTextField.text!.prefix(10))
+        linkViewModel.linkTitle.value = String(titleTextField.text!.prefix(100))
     
         titleTextCountLabel.text = "\(linkViewModel.linkTitle.value.count)/10"
         linkViewModel.checkValidation()

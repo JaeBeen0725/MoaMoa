@@ -8,9 +8,9 @@
 import UIKit
 import RealmSwift
 
-class AddCategoryViewController: BaseViewController {
+class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
 
-    let titleText = UITextView()
+    let titleText = UITextField()
     let addButton = UIButton()
     var delegate: ReloadDataDelegate?
     let realm = try! Realm()
@@ -48,10 +48,19 @@ class AddCategoryViewController: BaseViewController {
         
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         hideKeyboard()
+        
+        titleText.becomeFirstResponder()
+      
+        
+        titleText.delegate = self
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
     }
     
     @objc func addButtonTapped() {
-        let data = CateGoryRealm(title: titleText.text)
+        let data = CateGoryRealm(title: titleText.text ?? "")
         try! realm.write{
             realm.add(data)
         }
@@ -59,7 +68,9 @@ class AddCategoryViewController: BaseViewController {
        dismiss(animated: true)
         
     }
+   
 
 }
+
 
 

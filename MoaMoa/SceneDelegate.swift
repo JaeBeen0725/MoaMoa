@@ -38,13 +38,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             if let item = tabBarController.tabBar.items {
                 item[0].title = "메인"
-                item[0].image = UIImage(systemName: "magnifyingglass")
+                item[0].image = UIImage(systemName: "house")
     
                 item[1].title = "카테고리"
-                item[1].image = UIImage(systemName: "heart")
+                item[1].image = UIImage(systemName: "line.3.horizontal")
                 
                 item[2].title = "설정"
-                item[2].image = UIImage(systemName: "magnifyingglass")
+                item[2].image = UIImage(systemName: "gearshape")
                 
                 tabBarController.tabBar.tintColor = .brown
 
@@ -52,13 +52,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             if let item = tabBarController.tabBar.items {
                 item[0].title = "메인"
-                item[0].image = UIImage(systemName: "magnifyingglass")
+                item[0].image = UIImage(systemName: "house")
                 
                 item[1].title = "카테고리"
-                item[1].image = UIImage(systemName: "heart")
+                item[1].image = UIImage(systemName: "line.3.horizontal")
                 
                 item[2].title = "설정"
-                item[2].image = UIImage(systemName: "magnifyingglass")
+                item[2].image = UIImage(systemName: "gearshape")
                 
                 tabBarController.tabBar.tintColor = .brown
 

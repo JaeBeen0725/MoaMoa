@@ -18,7 +18,7 @@ protocol ReloadDataDelegate{
 }
 
 
-class AddLink: BaseViewController {
+class AddLink: BaseViewController, UITextFieldDelegate {
     
     var delegate: ReloadDataDelegate?
     
@@ -41,6 +41,8 @@ class AddLink: BaseViewController {
     let cancelButton = UIButton()
     let addButton = UIButton()
 
+    let pasteButton = UIButton()
+    
     init(delegate: ReloadDataDelegate? = nil, categoryPK: ObjectId? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.delegate = delegate
@@ -57,11 +59,23 @@ class AddLink: BaseViewController {
 
         addTargetSetup()
         checkBind()
+        hideKeyboard()
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        hideKeyboard()
+        pasteButton.addTarget(self, action: #selector(pasteButtonTapped), for: .touchUpInside)
+
+        titleTextField.becomeFirstResponder()
+        
+        titleTextField.delegate = self
+        memoTextField.delegate = self
+        
     }
  
+
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+    }
     
     func checkBind() {
         linkViewModel.linkURL.bind { text in
@@ -92,6 +106,13 @@ class AddLink: BaseViewController {
         linkTextField.addTarget(self, action: #selector(linkTextChanged), for: .editingChanged)
         titleTextField.addTarget(self, action: #selector(titleTextChanged), for: .editingChanged)
         memoTextField.addTarget(self, action: #selector(memoTextChanged), for: .editingChanged)
+       
+    }
+    @objc func pasteButtonTapped() {
+        linkTextField.text = ""
+        linkTextField.text = UIPasteboard.general.string
+        linkViewModel.linkURL.value = linkTextField.text ?? ""
+        linkViewModel.checkValidation()
     }
     
     @objc func linkTextChanged() {
@@ -130,6 +151,7 @@ class AddLink: BaseViewController {
                 allcategory.append(data)
               
             }
+          
         } else {
             let detailCategory = list.where {
                 $0._id == categoryPK!
@@ -139,13 +161,58 @@ class AddLink: BaseViewController {
                 let realLink = allcategory.last!._id
                 detailCategory.first!.detail.append(detailCateGory(link: linkTextField.text!, title: titleTextField.text!, memo: memoTextField.text ?? "", likeLink: false, onlyAll: false))
               detailCategory.first!.detail.last!.fk = realLink
+                
+     
             }
         }
+        getMetaData(fileName: "\(allcategory.last!._id)", realmLink: allcategory.last!.link)
         delegate!.recevieCollectionViewReloadData()
         NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
       dismiss(animated: true)
     }
     
+    
+    func getMetaData(fileName: String, realmLink: String) {
+        
+        MetaData.fetchMetaData(for: URL(string: realmLink)!) {  metadata in
+            
+            switch metadata {
+            case .success(let metadata):
+                
+                if let imageProvider = metadata.imageProvider {
+                    metadata.imageProvider = imageProvider
+
+                    
+                    imageProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
+                        guard error == nil else {
+                            return
+                        }
+                        guard let self = self else {return}
+                        if let image = image as? UIImage {
+                            
+                            DispatchQueue.main.async {
+                                print("@@@@@@@@", image)
+                                self.saveIamgeToDocument(fileName: fileName, image: image)
+                                NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                            }
+                            
+
+                        } else {
+                            print("no image available")
+                        }
+                    }
+                }
+                
+                
+            case .failure(let error):
+                
+                print(error)
+            }
+        }
+        NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+    }
+
+
     
     override func configure() {
         super.configure()
@@ -160,7 +227,7 @@ class AddLink: BaseViewController {
         view.addSubview(memoTextCountLabel)
         view.addSubview(cancelButton)
         view.addSubview(addButton)
-        
+        view.addSubview(pasteButton)
         linkTextField.backgroundColor = .blue
         
         titleLabel.backgroundColor = .blue
@@ -171,8 +238,9 @@ class AddLink: BaseViewController {
         addButton.backgroundColor = .blue
         titleTextCountLabel.backgroundColor = .blue
         memoTextCountLabel.backgroundColor = .blue
-        
+        pasteButton.backgroundColor = .lightGray
     }
+    
     
     override func setContraints() {
         super.setContraints()
@@ -182,7 +250,11 @@ class AddLink: BaseViewController {
             make.top.equalTo(view.safeAreaLayoutGuide).offset(8)
             make.leading.equalTo(view.safeAreaLayoutGuide).offset(8)
         }
-       
+        pasteButton.snp.makeConstraints { make in
+            make.size.equalTo(60)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(8)
+            make.leading.equalTo(linkTextField.snp.trailing).offset(8)
+        }
         
         titleLabel.snp.makeConstraints { make in
             make.size.equalTo(60)
@@ -232,4 +304,6 @@ class AddLink: BaseViewController {
     
     
 }
+
+
 

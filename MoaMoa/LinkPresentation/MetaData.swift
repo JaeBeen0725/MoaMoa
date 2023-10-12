@@ -19,11 +19,12 @@ struct MetaData {
             else {
                 if let error = error as? LPError {
                     completion(.failure(error))
+                    print(error.prettyString)
                 }
                 return
             }
             
-            MetaDataCache.cache(metaData: metaData)
+//            MetaDataCache.cache(metaData: metaData)
             completion(.success(metaData))
         }
     }
