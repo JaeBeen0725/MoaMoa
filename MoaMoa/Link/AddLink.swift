@@ -21,7 +21,6 @@ protocol ReloadDataDelegate{
 class AddLink: BaseViewController, UITextFieldDelegate {
     
     var delegate: ReloadDataDelegate?
-    
     let linkViewModel = LinkViewModel()
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
