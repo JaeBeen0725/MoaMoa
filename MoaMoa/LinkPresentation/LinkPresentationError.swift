@@ -19,8 +19,12 @@ extension LPError {
       return "Metadata 패치 시간 초과."
     case .unknown:
       return "Metadata 알수없음."
+    case .metadataFetchNotAllowed:
+        return "Metadta 가져올수없음"
     @unknown default:
       return "Metadata 알수없음."
     }
   }
 }
+
+

@@ -7,36 +7,26 @@
 
 import UIKit
 
+class BasePaddingLabel: UILabel {
+    private var padding = UIEdgeInsets(top: 3.0, left: 5.0, bottom: 3.0, right: 5.0)
 
-extension UIViewController {
     
-    func collectionViewSetup<T: UICollectionView>(collectionView: T) -> UICollectionView {
-        let layout = UICollectionViewFlowLayout()
-        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        let spacing : CGFloat = 8
-        let width = UIScreen.main.bounds.width - (spacing * 3)
-        view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
-        layout.itemSize = CGSize(width: width / 2, height: width / 2)
-        layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
-        layout.minimumInteritemSpacing = spacing
-        layout.minimumLineSpacing = spacing
-        return view
+    convenience init(padding: UIEdgeInsets) {
+        self.init()
+        self.padding = padding
     }
-    
-    
+
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: padding))
+    }
+
+    override var intrinsicContentSize: CGSize {
+        var contentSize = super.intrinsicContentSize
+        contentSize.height += padding.top + padding.bottom
+        contentSize.width += padding.left + padding.right
+
+        return contentSize
+    }
 }
 
 
-//    let collectionView = {
-//        let layout = UICollectionViewFlowLayout()
-//        let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-//        let spacing : CGFloat = 8
-//        let width = UIScreen.main.bounds.width - (spacing * 3)
-//        view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
-//        layout.itemSize = CGSize(width: width / 2, height: width / 2)
-//        layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
-//        layout.minimumInteritemSpacing = spacing
-//        layout.minimumLineSpacing = spacing
-//        
-//        return view
-//    }()

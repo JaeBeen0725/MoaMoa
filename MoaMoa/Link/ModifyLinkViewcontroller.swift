@@ -55,7 +55,7 @@ class ModifyLinkViewcontroller: BaseViewController {
        
         addTargetSetup()
         showData()
-        hideKeyboard()
+        
     }
    
     
@@ -82,9 +82,7 @@ class ModifyLinkViewcontroller: BaseViewController {
         linkViewModel.linkTitle.bind { text in
             self.titleTextField.text = text
         }
-        linkViewModel.linkMemo.bind { text in
-            self.memoTextField.text = text
-        }
+   
         
         linkViewModel.isValid.bind { bool in
             
@@ -112,8 +110,7 @@ class ModifyLinkViewcontroller: BaseViewController {
 
     }
     @objc func memoTextChanged() {
-        linkViewModel.linkMemo.value = String(memoTextField.text!.prefix(10))
-        memoTextCountLabel.text = "\(linkViewModel.linkMemo.value.count) /10"
+     
         linkViewModel.checkValidation()
 
     }

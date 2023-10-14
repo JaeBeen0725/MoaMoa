@@ -8,6 +8,8 @@ import UIKit
 
 extension UIViewController {
     
+    
+    
     func documentDirectoryPath() -> URL? {
         guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {return nil}
         
@@ -28,14 +30,14 @@ extension UIViewController {
     
     func loadImageFromDocument(fileName: String) -> UIImage {
         
-        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {return UIImage(systemName: "heart")!}
+        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {return UIImage(named: "NOPickture")!}
         
         let fileURL = documentDirectory.appendingPathComponent(fileName)
         
         if FileManager.default.fileExists(atPath: fileURL.path) {
             return UIImage(contentsOfFile: fileURL.path)!
         } else {
-            return UIImage(systemName: "heart")!
+            return UIImage(named: "NOPickture")!
         }
     }
     

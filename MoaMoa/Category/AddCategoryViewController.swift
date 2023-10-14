@@ -47,7 +47,7 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
         
         
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
-        hideKeyboard()
+        
         
         titleText.becomeFirstResponder()
       

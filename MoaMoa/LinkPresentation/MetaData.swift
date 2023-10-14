@@ -5,7 +5,7 @@
 //  Created by Jae Oh on 2023/10/08.
 //
 
-import Foundation
+import UIKit
 import LinkPresentation
 
 struct MetaData {
@@ -19,14 +19,19 @@ struct MetaData {
             else {
                 if let error = error as? LPError {
                     completion(.failure(error))
+                    
                     print(error.prettyString)
                 }
                 return
             }
             
-//            MetaDataCache.cache(metaData: metaData)
+
             completion(.success(metaData))
         }
     }
+   
     
 }
+
+
+

@@ -17,13 +17,14 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
     let detailCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        let spacing : CGFloat = 8
+        let spacing : CGFloat = 5
         let width = UIScreen.main.bounds.width - (spacing * 3)
         view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
-        layout.itemSize = CGSize(width: width / 2, height: width / 2)
+        layout.itemSize = CGSize(width: width / 2, height: width / 1.7)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         layout.minimumInteritemSpacing = spacing
         layout.minimumLineSpacing = spacing
+        return view
         
         return view
     }()
@@ -104,10 +105,18 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
         let category = list.where {
             $0._id == self.categoryPK!
         }
-        let detailData = category.first!.detail.reversed()[indexPath.row]
-      print("++++++", detailData)
+        let result = category.first!.detail.reversed()[indexPath.row]
+     
             
-        cell.thumbnailImageView.image = self.loadImageFromDocument(fileName: "\(detailData.fk)")
+        cell.thumbnailImageView.image = self.loadImageFromDocument(fileName: "\(result.fk)")
+        cell.titleLabel.text = result.title
+        cell.memoLabel.text = result.memo
+    
+        if result.likeLink == true {
+            cell.likeImage.image = UIImage(systemName: "heart.fill")
+        } else {
+            cell.likeImage.image = nil
+        }
         
        
        

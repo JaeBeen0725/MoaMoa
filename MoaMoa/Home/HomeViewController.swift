@@ -22,7 +22,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     let homeCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        let spacing : CGFloat = 5
+        let spacing : CGFloat = 16
         let width = UIScreen.main.bounds.width - (spacing * 3)
         view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
         layout.itemSize = CGSize(width: width / 2, height: width / 1.7)
@@ -34,7 +34,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+       
         
         homeCollectionView.delegate = self
         homeCollectionView.dataSource = self
@@ -215,6 +215,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         cell.titleLabel.text = result.title
         cell.memoLabel.text = result.memo
     
+        if result.likeLink == true {
+            cell.likeImage.image = UIImage(systemName: "heart.fill")
+        } else {
+            cell.likeImage.image = nil
+        }
     
         return cell
     }

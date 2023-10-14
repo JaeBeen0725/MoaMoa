@@ -12,7 +12,7 @@ class LinkViewModel {
     
     var linkURL = Observable("")
     var linkTitle = Observable("")
-    var linkMemo = Observable("")
+    
     var isValid = Observable(false)
     
     func checkValidation() {

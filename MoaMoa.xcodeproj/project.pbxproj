@@ -38,6 +38,7 @@
 		6E74E66E2ACA97610026627D /* LikeCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E66D2ACA97610026627D /* LikeCategoryViewController.swift */; };
 		6E74E6722ACACADD0026627D /* AddCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6712ACACADD0026627D /* AddCategoryViewController.swift */; };
 		6E74E6752ACAD3750026627D /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6742ACAD3750026627D /* WebViewController.swift */; };
+		6EA78EA22AD92142000B0B93 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6EA78EA12AD92142000B0B93 /* IQKeyboardManagerSwift */; };
 		6EA7F0902AD7BA8800A11ACD /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6EA7F08F2AD7BA8800A11ACD /* SnapKit */; };
 		6EAC0E032ACC23B0009C9D00 /* ModifyLinkViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAC0E022ACC23B0009C9D00 /* ModifyLinkViewcontroller.swift */; };
 /* End PBXBuildFile section */
@@ -74,6 +75,7 @@
 		6E74E66D2ACA97610026627D /* LikeCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCategoryViewController.swift; sourceTree = "<group>"; };
 		6E74E6712ACACADD0026627D /* AddCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryViewController.swift; sourceTree = "<group>"; };
 		6E74E6742ACAD3750026627D /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		6EA7F0912AD7C99000A11ACD /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		6EAC0E022ACC23B0009C9D00 /* ModifyLinkViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyLinkViewcontroller.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +85,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6EA7F0902AD7BA8800A11ACD /* SnapKit in Frameworks */,
+				6EA78EA22AD92142000B0B93 /* IQKeyboardManagerSwift in Frameworks */,
 				6E74E65A2AC960C90026627D /* RealmSwift in Frameworks */,
 				6E74E6582AC960C90026627D /* Realm in Frameworks */,
 			);
@@ -131,11 +134,11 @@
 		6E74E5CF2AC3D5FE0026627D /* MoaMoa */ = {
 			isa = PBXGroup;
 			children = (
+				6E74E6482AC95CB70026627D /* Home */,
 				6E586A182AD2546A009BFCC9 /* LinkPresentation */,
 				6E586A152AD1447E009BFCC9 /* Extention */,
 				6E74E6732ACAD35A0026627D /* WebView */,
 				6E74E66A2ACA899D0026627D /* DetailCategory */,
-				6E74E6482AC95CB70026627D /* Home */,
 				6E74E64C2AC95DA00026627D /* Category */,
 				6E74E64F2AC95DF80026627D /* Setting */,
 				6E74E6652AC9C8820026627D /* Link */,
@@ -245,6 +248,7 @@
 				6E74E6572AC960C90026627D /* Realm */,
 				6E74E6592AC960C90026627D /* RealmSwift */,
 				6EA7F08F2AD7BA8800A11ACD /* SnapKit */,
+				6EA78EA12AD92142000B0B93 /* IQKeyboardManagerSwift */,
 			);
 			productName = MoaMoa;
 			productReference = 6E74E5CD2AC3D5FE0026627D /* MoaMoa.app */;
@@ -267,16 +271,17 @@
 			};
 			buildConfigurationList = 6E74E5C82AC3D5FE0026627D /* Build configuration list for PBXProject "MoaMoa" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				ko,
 			);
 			mainGroup = 6E74E5C42AC3D5FE0026627D;
 			packageReferences = (
 				6E74E6562AC960C90026627D /* XCRemoteSwiftPackageReference "realm-swift" */,
 				6EA7F08E2AD7BA8800A11ACD /* XCRemoteSwiftPackageReference "SnapKit" */,
+				6EA78EA02AD92142000B0B93 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 			);
 			productRefGroup = 6E74E5CE2AC3D5FE0026627D /* Products */;
 			projectDirPath = "";
@@ -342,6 +347,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				6E74E5DC2AC3D5FF0026627D /* Base */,
+				6EA7F0912AD7C99000A11ACD /* ko */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -354,6 +360,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -417,6 +424,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -562,6 +570,14 @@
 				kind = branch;
 			};
 		};
+		6EA78EA02AD92142000B0B93 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.5.15;
+			};
+		};
 		6EA7F08E2AD7BA8800A11ACD /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -582,6 +598,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6E74E6562AC960C90026627D /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		6EA78EA12AD92142000B0B93 /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6EA78EA02AD92142000B0B93 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
 		};
 		6EA7F08F2AD7BA8800A11ACD /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

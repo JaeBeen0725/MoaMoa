@@ -35,7 +35,7 @@ class ChangeCategoryName: BaseViewController {
         list = realm.objects(CateGoryRealm.self)
         showData()
         addButton.addTarget(self, action: #selector(changeButtonTapped), for: .touchUpInside)
-        hideKeyboard()
+        
     }
     
     @objc func changeButtonTapped() {

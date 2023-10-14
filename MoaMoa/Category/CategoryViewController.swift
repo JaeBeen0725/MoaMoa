@@ -92,7 +92,7 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
                     self.present(vc, animated: true)
                 }
                 
-                let deleteAction = UIAction(title: "삭제", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                let deleteCategory = UIAction(title: "카테고리 삭제", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { _ in
                     let data = self.list[indexPath.row].detail
                     
                     try! self.realm.write{
@@ -101,8 +101,8 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
                     }
                     collectionView.reloadData()
                 }
-                
-                return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [modifyAction, deleteAction])
+                let parentsRealdeletMenu = UIMenu(options: .displayInline, children: [deleteCategory])
+                return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [modifyAction, parentsRealdeletMenu])
                 
             }
             return config
