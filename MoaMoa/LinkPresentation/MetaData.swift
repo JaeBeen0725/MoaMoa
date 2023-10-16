@@ -11,7 +11,7 @@ import LinkPresentation
 struct MetaData {
     static func fetchMetaData(for url: URL, completion: @escaping ((Result<LPLinkMetadata ,LPError>) -> Void)) {
         let metaDataProvider = LPMetadataProvider()
-        metaDataProvider.timeout = 3
+       metaDataProvider.timeout = 3
         
         metaDataProvider.startFetchingMetadata(for: url) { metaData, error in
             guard let metaData = metaData, error == nil

@@ -20,6 +20,7 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         let spacing : CGFloat = 5
         let width = UIScreen.main.bounds.width - (spacing * 3)
         view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
+        view.backgroundColor = UIColor(named: "BackgroundColor")
         layout.itemSize = CGSize(width: width / 2, height: width / 1.7)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         layout.minimumInteritemSpacing = spacing
@@ -170,7 +171,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                         
                 }
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = ModifyLinkViewcontroller(fk: resultData._id, delegate: self)
+                    let vc = AddLink(delegate: self, fk: resultData._id)
 
                     self.present(vc, animated: true)
                 }

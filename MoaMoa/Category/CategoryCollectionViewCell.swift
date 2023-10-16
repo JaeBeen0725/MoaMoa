@@ -9,11 +9,13 @@ import UIKit
 
 class CategoryCollectionViewCell: BaseCollectionViewCell {
     
-    let categoryTitle = UILabel()
+    let categoryTitle = BasePaddingLabel()
     
     override func configure() {
         super.configure()
-        
+        if categoryTitle.adjustsFontSizeToFitWidth == false {
+            categoryTitle.adjustsFontSizeToFitWidth = true
+               }
         contentView.addSubview(categoryTitle)
     }
     

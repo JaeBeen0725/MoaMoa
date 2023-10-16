@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let settingViewControlelr = UINavigationController(rootViewController: SettingViewController())
 
         let tabBarController = UITabBarController()
-        tabBarController.setViewControllers([homeViewController, categoryViewController, settingViewControlelr], animated: true)
+        tabBarController.setViewControllers([homeViewController, categoryViewController, settingViewControlelr], animated: false)
         
         let isLaunched = UserDefaults.standard.bool(forKey: "isLaunched")
         if isLaunched == false {

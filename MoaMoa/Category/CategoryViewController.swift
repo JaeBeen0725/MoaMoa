@@ -18,7 +18,9 @@ class CategoryViewController: BaseViewController {
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         let spacing : CGFloat = 8
         let width = UIScreen.main.bounds.width - (spacing * 3)
+        
         view.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCollectionViewCell")
+        view.backgroundColor = UIColor(named: "BackgroundColor")
         layout.itemSize = CGSize(width: width / 2, height: width / 2)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         layout.minimumInteritemSpacing = spacing
@@ -39,8 +41,8 @@ class CategoryViewController: BaseViewController {
     
     @objc func addCategory() {
         let vc =  AddCategoryViewController(delegate: self)
-        
-       
+        vc.modalPresentationStyle = .overFullScreen
+     
         present( vc, animated: true)
     }
     
@@ -87,8 +89,9 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
             let config = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
                 
                 
-                let modifyAction = UIAction(title: "이름변경", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = ChangeCategoryName(delegate: self, categoryPk: self.list[indexPath.row]._id)
+                let modifyAction = UIAction(title: "카테고리 이름 변경", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
+                    let vc = AddCategoryViewController(delegate: self, categoryPk: self.list[indexPath.row]._id)
+                    vc.modalPresentationStyle = .overFullScreen
                     self.present(vc, animated: true)
                 }
                 

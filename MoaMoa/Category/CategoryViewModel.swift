@@ -6,3 +6,20 @@
 //
 
 import Foundation
+
+class CategoryViewModel {
+    
+    var categorytitle = Observable("")
+
+    
+    
+    
+    func signIn(completion: @escaping () -> Void ) {
+     print("@@@@@@@@@2")
+       
+        
+    
+    }
+
+    
+}
