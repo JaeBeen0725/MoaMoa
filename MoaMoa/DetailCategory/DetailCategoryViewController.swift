@@ -26,7 +26,16 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         layout.minimumInteritemSpacing = spacing
         layout.minimumLineSpacing = spacing
         return view
-        
+
+    }()
+    
+    let noLinkLabel = {
+        let view = UILabel()
+        view.text = "링크가 없습니다."
+        view.font = UIFont.boldSystemFont(ofSize: 20)
+        view.textColor = .gray
+        view.textAlignment = .center
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -41,14 +50,24 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        list = realm.objects(CateGoryRealm.self)
+        showCategoryTitle()
+        
+     
         addLink()
         print(#function)
-        list = realm.objects(CateGoryRealm.self)
         detailCollectionView.reloadData()
         detailCategory = realm.objects(detailCateGory.self)
         NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
         
       
+    }
+    func showCategoryTitle() {
+        let categoryTitle = list.where {
+            $0._id == categoryPK!
+        }
+    
+        title  = categoryTitle.first?.title
     }
     
     
@@ -70,6 +89,7 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         super.configure()
         
         view.addSubview(detailCollectionView)
+        view.addSubview(noLinkLabel)
         detailCollectionView.dataSource = self
         detailCollectionView.delegate = self
     }
@@ -79,6 +99,9 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         super.setContraints()
         
         detailCollectionView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        noLinkLabel.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
@@ -94,7 +117,12 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
         let data = self.list.where {
             $0._id == self.categoryPK!
         }
-   
+     
+        if data.first!.detail.count == 0 {
+            noLinkLabel.isHidden = false
+        } else {
+            noLinkLabel.isHidden = true
+        }
         return data.first!.detail.count
     }
     
@@ -147,6 +175,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                             detailData[i].likeLink.toggle()
                         }
                     }
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                         collectionView.reloadData()
                     }
                 
@@ -155,8 +184,9 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                     
                     
                     let vc = AddToAnotherCategoryViewController(fk: resultData._id)
-                    
-                    self.present(vc, animated: true)
+                    let nav = UINavigationController(rootViewController: vc)
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                    self.present(nav, animated: true)
   
                 }
                 
@@ -172,8 +202,9 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                 }
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     let vc = AddLink(delegate: self, fk: resultData._id)
-
-                    self.present(vc, animated: true)
+                    let nav = UINavigationController(rootViewController: vc)
+                    
+                    self.present(nav, animated: true)
                 }
                 
                 let deletInrCategory = UIAction(title: "카테고리에서 삭제", subtitle: nil, image: UIImage(systemName: "rectangle.badge.minus"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
@@ -181,14 +212,14 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                         $0._id == self.categoryPK!
                     }
                     
-                    let categoryData = category.first!.detail[indexPath.row]
+                    let categoryData = category.first!.detail.reversed()[indexPath.row]
                    
                     
                     try! self.realm.write{
                         self.realm.delete(categoryData)
                     }
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                     collectionView.reloadData()
- 
                 }
                 
               

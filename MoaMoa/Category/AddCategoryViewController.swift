@@ -69,6 +69,14 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
          return view
      }()
     
+    let warningTitleLabel = {
+        let view = UILabel()
+        view.font = UIFont.systemFont(ofSize: 13)
+        view.text = "링크를 입력해 주세요."
+        view.textColor = .red
+        view.isHidden = true
+        return view
+    }()
   
     
     var delegate: ReloadDataDelegate?
@@ -114,6 +122,7 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
   
     @objc func textFieldDidChanged() {
         titleUnderBarUIView.backgroundColor = .systemBackground
+        warningTitleLabel.isHidden = true
         if titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
             titleTextField.setPlaceholder(color: .gray)
             titleTextField.placeholder = "제목을 적어주세요."
@@ -132,11 +141,13 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
     
     @objc func addButtonTapped() {
         if titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
+            
             titleUnderBarUIView.backgroundColor = .red
-            titleTextField.placeholder = "제목을 적어주세요."
-            titleTextField.setPlaceholder(color: .red)
+            warningTitleLabel.isHidden = false
+            
             
         }
+        
         else {
             if categoryPk == nil {
                 let data = CateGoryRealm(title: titleTextField.text ?? "")
@@ -145,6 +156,7 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
                 }
                 
                 delegate?.recevieCollectionViewReloadData()
+                NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                 dismiss(animated: true)
             } else {
                 
@@ -155,6 +167,7 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
                     category.first!.title = titleTextField.text ?? ""
                 }
                 delegate?.recevieCollectionViewReloadData()
+                NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                 dismiss(animated: true)
                 
             }
@@ -188,7 +201,7 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
         view.addSubview(titleUnderBarUIView)
         view.addSubview(cancleButton)
         view.addSubview(addButton)
-        
+        view.addSubview(warningTitleLabel)
         
         
     }
@@ -245,6 +258,13 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
             make.height.equalTo(40)
             make.bottom.equalTo(backgroundView.snp.bottom).inset(8)
             make.leading.equalTo(titleTextField.snp.leading)
+        }
+        
+        warningTitleLabel.snp.makeConstraints { make in
+            make.width.equalTo(titleTextField.snp.width).multipliedBy(0.7)
+            make.leading.equalTo(backgroundView.snp.leading).inset(8)
+            make.height.equalTo(titleTextField.snp.height).multipliedBy(0.5)
+            make.top.equalTo(titleTextField.snp.bottom).offset(4)
         }
         
     }

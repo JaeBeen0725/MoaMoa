@@ -30,11 +30,20 @@ class LikeCategoryViewController: BaseViewController, UIViewControllerTransition
         
     }()
     
+    let noLinkLabel = {
+        let view = UILabel()
+        view.text = "링크가 없습니다."
+        view.font = UIFont.boldSystemFont(ofSize: 20)
+        view.textColor = .gray
+        view.textAlignment = .center
+        view.backgroundColor = .clear
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-     
-     
+     title = "Like"
+        
         list = realm.objects(CateGoryRealm.self)
         detailCollectionView.reloadData()
         detailCategory = realm.objects(detailCateGory.self)
@@ -45,6 +54,7 @@ class LikeCategoryViewController: BaseViewController, UIViewControllerTransition
         super.configure()
         
         view.addSubview(detailCollectionView)
+        view.addSubview(noLinkLabel)
         detailCollectionView.dataSource = self
         detailCollectionView.delegate = self
     }
@@ -54,6 +64,9 @@ class LikeCategoryViewController: BaseViewController, UIViewControllerTransition
         super.setContraints()
         
         detailCollectionView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        noLinkLabel.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
@@ -70,7 +83,12 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
         let data = self.detailCategory.where {
             $0.onlyAll == true && $0.likeLink == true
         }
-   
+        
+        if data.count == 0 {
+            noLinkLabel.isHidden = false
+        } else {
+            noLinkLabel.isHidden = true
+        }
         return data.count
     }
     
@@ -122,6 +140,7 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
                             detailData[i].likeLink.toggle()
                         }
                     }
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                         collectionView.reloadData()
                     
                 }
@@ -130,8 +149,9 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
                     
                     
                     let vc = AddToAnotherCategoryViewController(fk: resultData._id)
-                    
-                    self.present(vc, animated: true)
+                    let nav = UINavigationController(rootViewController: vc)
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                    self.present(nav, animated: true)
   
                 }
               
@@ -149,8 +169,9 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
                
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     let vc = AddLink(delegate: self, fk: resultData._id)
-
-                    self.present(vc, animated: true)
+                    let nav = UINavigationController(rootViewController: vc)
+                    
+                    self.present(nav, animated: true)
                 }
               
                 let realdeletAction = UIAction(title: "삭제", image: UIImage(systemName: "trash"), identifier: nil, discoverabilityTitle: nil, attributes: .destructive, state: .off) { _ in
@@ -162,8 +183,8 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
                         self.realm.delete(deleteData)
            
                     }
-                    collectionView.reloadData()
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                    collectionView.reloadData()
                 }
                 let parentsRealdeletMenu = UIMenu(options: .displayInline, children: [realdeletAction])
                 return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,

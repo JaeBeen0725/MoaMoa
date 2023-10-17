@@ -9,21 +9,55 @@ import UIKit
 
 class CategoryCollectionViewCell: BaseCollectionViewCell {
     
+    let thumbnailImageView = UIImageView()
+    
     let categoryTitle = BasePaddingLabel()
     
     override func configure() {
         super.configure()
+     
+        
+        
+        layer.cornerRadius = 12
+    
+        contentView.layer.cornerRadius = 12
+        
+        thumbnailImageView.layer.borderWidth = 0.4
+        thumbnailImageView.layer.cornerRadius = 12
+        thumbnailImageView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        contentView.addSubview(categoryTitle)
+        contentView.addSubview(thumbnailImageView)
+
+        contentView.clipsToBounds = true
         if categoryTitle.adjustsFontSizeToFitWidth == false {
             categoryTitle.adjustsFontSizeToFitWidth = true
                }
-        contentView.addSubview(categoryTitle)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let color = UIColor(named: "reversedSystemBackgroundColor")!
+              let resolvedColor = color.resolvedColor(with: traitCollection)
+        thumbnailImageView.layer.borderColor = resolvedColor.cgColor
     }
     
     override func setConstraints() {
         super.setConstraints()
         
+        thumbnailImageView.snp.makeConstraints { make in
+           
+            make.size.equalTo(self.snp.width)
+            make.top.equalToSuperview()
+            make.centerX.equalToSuperview()
+            
+            
+        }
         categoryTitle.snp.makeConstraints { make in
-            make.edges.equalTo(self.safeAreaLayoutGuide)
+            make.top.equalTo(thumbnailImageView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview()
+
         }
     }
 }

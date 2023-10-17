@@ -21,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.shouldResignOnTouchOutside = true
         
         
+        
+        
         return true
     }
 

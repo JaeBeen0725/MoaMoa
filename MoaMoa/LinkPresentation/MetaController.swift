@@ -70,11 +70,8 @@ final class PinterestLayout {
         let xOffset = (0..<numberOfColumns).map { CGFloat($0) * columnWidth }
         
         var currentColumn = 0
-        
         var yOffset: [CGFloat] = .init(repeating: 0, count: numberOfColumns)
-        
         var frames = [CGRect]()
-        
         for index in 0..<itemRatios.count {
             let aspectRatio = itemRatios[index]
             

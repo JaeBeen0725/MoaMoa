@@ -21,6 +21,12 @@ class AddToAnotherCategoryViewController: CategoryViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "카테고리에 추가하기"
+        
+    }
+    
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         list.count - 2
@@ -30,8 +36,15 @@ class AddToAnotherCategoryViewController: CategoryViewController {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionViewCell", for: indexPath) as? CategoryCollectionViewCell else {return UICollectionViewCell()}
         
         let data = list[indexPath.row + 2]
-        cell.categoryTitle.text = data.title
- 
+     
+        
+        if let thumbnailImageData = data.detail.last {
+            cell.thumbnailImageView.image = self.loadImageFromDocument(fileName: String(describing: thumbnailImageData.fk))
+            cell.categoryTitle.text = data.title
+        } else {
+            cell.thumbnailImageView.image = nil
+            cell.categoryTitle.text = data.title
+        }
         return cell
       
     }
@@ -54,6 +67,7 @@ class AddToAnotherCategoryViewController: CategoryViewController {
                 list[indexPath.row + 2].detail.last!.fk = data.first!._id
             }
         }
+        NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
         dismiss(animated: true)
 //        navigationController?.popViewController(animated: false)
     }

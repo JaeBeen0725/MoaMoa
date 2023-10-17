@@ -19,9 +19,13 @@ class HomeCollectionViewCell: BaseCollectionViewCell {
 
     override func configure() {
         
-        contentView.layer.cornerRadius = 10
-        contentView.layer.borderWidth = 0.4
+        layer.cornerRadius = 9
+        layer.borderWidth = 0.4
+        contentView.layer.cornerRadius = 9
+//        contentView.layer.borderWidth = 0.4
         contentView.clipsToBounds = true
+       
+ 
         contentView.addSubview(thumbnailImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(showMemoButton)

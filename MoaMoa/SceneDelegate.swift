@@ -20,10 +20,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
         let categoryViewController = UINavigationController(rootViewController: CategoryViewController())
-        let settingViewControlelr = UINavigationController(rootViewController: SettingViewController())
+//        let settingViewControlelr = UINavigationController(rootViewController: SettingViewController())
 
         let tabBarController = UITabBarController()
-        tabBarController.setViewControllers([homeViewController, categoryViewController, settingViewControlelr], animated: false)
+        tabBarController.setViewControllers([homeViewController, categoryViewController], animated: false)
         
         let isLaunched = UserDefaults.standard.bool(forKey: "isLaunched")
         if isLaunched == false {
@@ -37,30 +37,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       UserDefaults.standard.set(true, forKey: "isLaunched")
 
             if let item = tabBarController.tabBar.items {
-//                item[0].title = "메인"
+               item[0].title = "홈화면"
                 item[0].image = UIImage(systemName: "house")
     
-//                item[1].title = "카테고리"
+                item[1].title = "카테고리"
                 item[1].image = UIImage(systemName: "line.3.horizontal")
                 
 //                item[2].title = "설정"
-                item[2].image = UIImage(systemName: "gearshape")
+//                item[2].image = UIImage(systemName: "gearshape")
                 
-                tabBarController.tabBar.tintColor = .gray
+                tabBarController.tabBar.tintColor = UIColor(named: "reversedSystemBackgroundColor")
 
             }
         } else {
             if let item = tabBarController.tabBar.items {
-//                item[0].title = "메인"
+                item[0].title = "홈화면"
                 item[0].image = UIImage(systemName: "house")
                 
-//                item[1].title = "카테고리"
+                item[1].title = "카테고리"
                 item[1].image = UIImage(systemName: "line.3.horizontal")
                 
 //                item[2].title = "설정"
-                item[2].image = UIImage(systemName: "gearshape")
+//                item[2].image = UIImage(systemName: "gearshape")
                 
-                tabBarController.tabBar.tintColor = .gray
+                tabBarController.tabBar.tintColor = UIColor(named: "reversedSystemBackgroundColor")
 
             }
           

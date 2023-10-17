@@ -12,32 +12,45 @@ class CategoryViewController: BaseViewController {
     
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
+    var resultt: Results<detailCateGory>!
     var delegate: ReloadDataDelegate?
     let categoryCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        let spacing : CGFloat = 8
+        let spacing : CGFloat = 16
         let width = UIScreen.main.bounds.width - (spacing * 3)
         
         view.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCollectionViewCell")
         view.backgroundColor = UIColor(named: "BackgroundColor")
-        layout.itemSize = CGSize(width: width / 2, height: width / 2)
+
+        layout.itemSize = CGSize(width: width / 2, height: width / 1.7)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         layout.minimumInteritemSpacing = spacing
         layout.minimumLineSpacing = spacing
-        
         return view
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        list = realm.objects(CateGoryRealm.self)
+        title = "카테고리"
         
+        
+        list = realm.objects(CateGoryRealm.self)
+        resultt = realm.objects(detailCateGory.self)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addCategory))
         
+        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
         
+      
     }
-  
+    
+    
+    @objc func collectionViewReloadData() {
+        categoryCollectionView.reloadData()
+    }
+    
+   
+
     
     @objc func addCategory() {
         let vc =  AddCategoryViewController(delegate: self)
@@ -76,8 +89,28 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CategoryCollectionViewCell", for: indexPath) as? CategoryCollectionViewCell else {return UICollectionViewCell()}
         
         let data = list[indexPath.row]
-        cell.categoryTitle.text = data.title
-        
+        let likeData = resultt.where{
+            $0.likeLink == true
+        }
+        if indexPath.row == 1 {
+            if likeData.count == 0 {
+                cell.thumbnailImageView.image = nil
+                cell.categoryTitle.text = data.title
+            } else {
+                cell.thumbnailImageView.image = self.loadImageFromDocument(fileName: String(describing: likeData.last!.fk))
+                cell.categoryTitle.text = data.title
+            }
+        } else {
+            
+            if let thumbnailImageData = data.detail.last {
+                cell.thumbnailImageView.image = self.loadImageFromDocument(fileName: String(describing: thumbnailImageData.fk))
+                cell.categoryTitle.text = data.title
+            } else {
+                cell.thumbnailImageView.image = nil
+                cell.categoryTitle.text = data.title
+            }
+            
+        }
         
         return cell
     }
@@ -114,7 +147,6 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let vc = DetailCategoryViewController()
    
     
         if indexPath.row == 0 {
@@ -123,7 +155,8 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
         } else if indexPath.row == 1 {
             navigationController?.pushViewController(LikeCategoryViewController(), animated: true)
         } else {
-            vc.categoryPK = list[indexPath.row]._id
+            let vc = DetailCategoryViewController(categoryPK: list[indexPath.row]._id)
+      
         
             navigationController?.pushViewController(vc, animated: true)
        

@@ -17,7 +17,9 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     let realm = try! Realm()
     
     var detailCategory: Results<detailCateGory>!
-    let searchController = UISearchController(searchResultsController: nil)
+    let linkSearchBar = UISearchBar()
+
+    
     
     let homeCollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -35,8 +37,22 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         return view
     }()
     
+    let noLinkLabel = {
+        let view = UILabel()
+        view.text = "링크가 없습니다."
+        view.font = UIFont.boldSystemFont(ofSize: 20)
+        view.textColor = .gray
+        view.textAlignment = .center
+        view.backgroundColor = .clear
+        return view
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "홈화면"
+        
+        self.navigationController?.navigationBar.tintColor = UIColor(named: "SignatureColor")
+        
        
         
         homeCollectionView.delegate = self
@@ -45,7 +61,8 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         addLink()
         
         detailCategory = realm.objects(detailCateGory.self)
-       
+     
+        
         print(realm.configuration.fileURL)
         NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
         
@@ -64,13 +81,15 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     }
    
     func searchBar() {
+        let cancelButtonAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: "reversedSystemBackgroundColor")]
+        UIBarButtonItem.appearance().setTitleTextAttributes(cancelButtonAttributes as [NSAttributedString.Key : Any] , for: .normal)
+        //linkSearchBar.backgroundColor = .red//UIColor(named: "BackgroundColor")
+        linkSearchBar.barTintColor = UIColor(named: "BackgroundColor")
+        linkSearchBar.showsCancelButton = true
+        linkSearchBar.delegate = self
+        linkSearchBar.placeholder = "Search link"
+        self.linkSearchBar.searchBarStyle = .minimal
         
-        navigationItem.searchController = searchController
-        
-        
-        searchController.searchBar.delegate = self
-        searchController.delegate = self
-        searchController.searchBar.placeholder = "Search link"
         navigationItem.hidesSearchBarWhenScrolling = false
     }
     
@@ -80,16 +99,17 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     }
     @objc func addLinkButtonTapped() {
         let vc = AddLink(delegate: self, categoryPK: nil)
-    
+        let nav = UINavigationController(rootViewController: vc)
         
-       present(vc, animated: true)
+       present(nav, animated: true)
     }
 
     
     override func configure() {
         super.configure()
         view.addSubview(homeCollectionView)
-        
+        view.addSubview(linkSearchBar)
+        view.addSubview(noLinkLabel)
         homeCollectionView.keyboardDismissMode = .onDrag
         
         
@@ -98,9 +118,21 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     override func setContraints() {
         super.setContraints()
         
+        linkSearchBar.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(38)
+        
+        }
         homeCollectionView.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalTo(linkSearchBar.snp.bottom)
+           
+        }
+        
+        
+        noLinkLabel.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
-            
         }
     }
     
@@ -112,6 +144,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let data = detailCategory.where{
             $0.onlyAll == true
+        }
+        if data.count == 0 {
+            noLinkLabel.isHidden = false
+        } else {
+            noLinkLabel.isHidden = true
         }
         
         return data.count
@@ -138,13 +175,15 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                                 detailData[i].likeLink.toggle()
                             }
                         }
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                         collectionView.reloadData()
                     }
                 let addToAnotherCategory = UIAction(title: "카테고리에 추가", subtitle: nil, image: UIImage(systemName: "rectangle.badge.plus"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     
                     let vc = AddToAnotherCategoryViewController(fk: resultData._id)
+                    let nav = UINavigationController(rootViewController: vc)
                     
-                    self.present(vc, animated: true)
+                    self.present(nav, animated: true)
   
                 }
                 
@@ -161,8 +200,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     let vc = AddLink(delegate: self, fk: resultData._id)
-
-                    self.present(vc, animated: true)
+                    let nav = UINavigationController(rootViewController: vc)
+                    
+                    self.present(nav, animated: true)
                 }
                
                 
@@ -256,7 +296,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
             detailCategory = realm.objects(detailCateGory.self)
-            guard let text = searchController.searchBar.text else { return }
+            guard let text = searchBar.text else { return }
             let data = detailCategory.where{
                 $0.onlyAll == true && $0.title.contains(text)
             }
@@ -277,7 +317,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
         
         func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-            searchController.searchBar.text = ""
+            searchBar.text = ""
             detailCategory = realm.objects(detailCateGory.self)
             homeCollectionView.reloadData()
         }

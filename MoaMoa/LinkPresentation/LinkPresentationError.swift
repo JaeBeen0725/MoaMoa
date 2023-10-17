@@ -12,17 +12,17 @@ extension LPError {
   var prettyString: String {
     switch self.code {
     case .metadataFetchCancelled:
-      return "Metadata 패치가 취소됨."
+      return "링크 패치가 취소되었습니다."
     case .metadataFetchFailed:
-      return "Metadata 패치가 실패됨."
+      return "알수없는 링크입니다."
     case .metadataFetchTimedOut:
-      return "Metadata 패치 시간 초과."
+      return "링크 패치 시간이 초과되었습니다."
     case .unknown:
-      return "Metadata 알수없음."
+      return "알수없는 링크입니다."
     case .metadataFetchNotAllowed:
-        return "Metadta 가져올수없음"
+        return "링크를 가져올 수 없음니다."
     @unknown default:
-      return "Metadata 알수없음."
+      return "알수없는 링크입니다."
     }
   }
 }
