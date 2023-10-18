@@ -471,62 +471,72 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     
     
     func receiveMetaData(url: String) {
-        activateButton = false
-        MetaData.fetchMetaData(for: (URL(string: url) ?? URL(string: "url" )!) ) {  metadata in
-            
-            switch metadata {
-            case .success(let metadata):
-                if let imageProvider = metadata.imageProvider {
-                    metadata.imageProvider = imageProvider
-                    
-                    imageProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
-                        guard error == nil else {
-                            return
-                        }
-                        guard let self = self else {return}
-                        if let image = image as? UIImage {
-                            
-                            DispatchQueue.main.async { [weak self] in
-                                guard let self = self else { return }
-                              
-                                self.temporaryUIImageData = image
-                                self.temporaryTitleData = metadata.title
-                                
-                                linkUnderBarUIView.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
-                                warningLinkLabel.isHidden = true
-                                showAlertHandle()
-                           
-                                activateButton = true
-                                linkPasteButton.configuration?.showsActivityIndicator = false
-                                linkPasteButton.configuration?.image = UIImage(systemName: "checkmark")
-                                linkPasteButton.isEnabled = false
-                            }
-                            
-                        } else {
-                            print("no image available")
-                        }
-                    }
-                } else {
-                    DispatchQueue.main.async { [weak self] in
-                        guard let self = self else { return }
-                        self.temporaryTitleData = metadata.title
-                        showAlertHandle()
-                   
-                        activateButton = true
-                        linkUnderBarUIView.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
-                        linkPasteButton.configuration?.showsActivityIndicator = false
-                        linkPasteButton.configuration?.image = UIImage(systemName: "checkmark")
-                        linkPasteButton.isEnabled = false
-                    }
-                }
-                
-                
-            case .failure(let error):
-                self.handleFailureFetchMetaData(for: error)
-                
-            }
+        let checkSameLink = detailResult.where {
+            $0.link == url
         }
         
+        if checkSameLink.count == 0 {
+            activateButton = false
+            MetaData.fetchMetaData(for: (URL(string: url) ?? URL(string: "url" )!) ) {  metadata in
+                
+                switch metadata {
+                case .success(let metadata):
+                    if let imageProvider = metadata.imageProvider {
+                        metadata.imageProvider = imageProvider
+                        
+                        imageProvider.loadObject(ofClass: UIImage.self) { [weak self] (image, error) in
+                            guard error == nil else {
+                                return
+                            }
+                            guard let self = self else {return}
+                            if let image = image as? UIImage {
+                                
+                                DispatchQueue.main.async { [weak self] in
+                                    guard let self = self else { return }
+                                    
+                                    self.temporaryUIImageData = image
+                                    self.temporaryTitleData = metadata.title
+                                    
+                                    linkUnderBarUIView.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
+                                    warningLinkLabel.isHidden = true
+                                    showAlertHandle()
+                                    
+                                    activateButton = true
+                                    linkPasteButton.configuration?.showsActivityIndicator = false
+                                    linkPasteButton.configuration?.image = UIImage(systemName: "checkmark")
+                                    linkPasteButton.isEnabled = false
+                                }
+                                
+                            } else {
+                                print("no image available")
+                            }
+                        }
+                    } else {
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            self.temporaryTitleData = metadata.title
+                            showAlertHandle()
+                            
+                            activateButton = true
+                            linkUnderBarUIView.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
+                            linkPasteButton.configuration?.showsActivityIndicator = false
+                            linkPasteButton.configuration?.image = UIImage(systemName: "checkmark")
+                            linkPasteButton.isEnabled = false
+                        }
+                    }
+                    
+                    
+                case .failure(let error):
+                    self.handleFailureFetchMetaData(for: error)
+                    
+                }
+            }
+        }
+        else {
+            showtoast(title: "동일한 링크주소가 있습니다.")
+            linkPasteButton.configuration?.showsActivityIndicator = false
+            linkPasteButton.configuration?.attributedTitle = AttributedString("불러오기")
+        }
     }
     private func handleFailureFetchMetaData(for error: LPError? = nil) {
         let errorLabelText = error?.prettyString ?? "잘못된 URL입니다. 다시 입력해주세요!"
