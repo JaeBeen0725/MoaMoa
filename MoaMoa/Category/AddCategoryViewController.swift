@@ -72,20 +72,20 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
     let warningTitleLabel = {
         let view = UILabel()
         view.font = UIFont.systemFont(ofSize: 13)
-        view.text = "링크를 입력해 주세요."
+        view.text = "제목을 입력해 주세요."
         view.textColor = .red
         view.isHidden = true
         return view
     }()
   
     
-    var delegate: ReloadDataDelegate?
+//    var delegate: ReloadDataDelegate?
     let realm = try! Realm()
     var categoryPk : ObjectId?
     var list: Results<CateGoryRealm>!
     
-    init(delegate: ReloadDataDelegate? = nil, categoryPk: ObjectId? = nil) {
-        self.delegate = delegate
+    init(/*delegate: ReloadDataDelegate? = nil,*/ categoryPk: ObjectId? = nil) {
+//        self.delegate = delegate
         self.categoryPk = categoryPk
         super.init(nibName: nil, bundle: nil)
     }
@@ -155,7 +155,7 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
                     realm.add(data)
                 }
                 
-                delegate?.recevieCollectionViewReloadData()
+//                delegate?.recevieCollectionViewReloadData() //딜리게이트
                 NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                 dismiss(animated: true)
             } else {
@@ -166,7 +166,7 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
                 try! realm.write{
                     category.first!.title = titleTextField.text ?? ""
                 }
-                delegate?.recevieCollectionViewReloadData()
+//                delegate?.recevieCollectionViewReloadData() //딜리게이트
                 NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                 dismiss(animated: true)
                 

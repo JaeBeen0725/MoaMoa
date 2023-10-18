@@ -31,18 +31,20 @@ class detailCateGory: Object {
     @Persisted var fk: ObjectId
     @Persisted var link: String
     @Persisted var title: String
+    @Persisted var searchTitle: String
     @Persisted var memo: String
     @Persisted var likeLink: Bool
     @Persisted var onlyAll: Bool
     
     @Persisted(originProperty: "detail") var mainTodo: LinkingObjects<CateGoryRealm>
     
-    convenience init(link: String, title: String, memo: String, likeLink: Bool, onlyAll: Bool) {
+    convenience init(link: String, title: String, searchTitle: String ,memo: String, likeLink: Bool, onlyAll: Bool) {
         self.init()
         
         self.fk = _id
         self.link = link
         self.title = title
+        self.searchTitle = searchTitle
         self.memo = memo
         self.likeLink = likeLink
         self.onlyAll = onlyAll

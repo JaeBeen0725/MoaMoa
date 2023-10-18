@@ -10,18 +10,18 @@ import RealmSwift
 import LinkPresentation
 import Toast
 
-protocol RealmPassDataDelegate{
-    func receviePkData(data: ObjectId)
-}
-
-protocol ReloadDataDelegate{
-    func recevieCollectionViewReloadData()
-    
-}
+//protocol RealmPassDataDelegate{ //딜리게이트
+//    func receviePkData(data: ObjectId)
+//}
+//
+//protocol ReloadDataDelegate{
+//    func recevieCollectionViewReloadData()
+//    
+//}
 
 class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     
-    var delegate: ReloadDataDelegate?
+//    var delegate: ReloadDataDelegate? //딜리게이트
     var detailResult: Results<detailCateGory>!
     let linkViewModel = LinkViewModel()
     let realm = try! Realm()
@@ -181,9 +181,10 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     
     var temporaryUIImageData: UIImage?
     var temporaryTitleData: String?
+    
+    
     let addButton = {
-        
-       
+
         let button = UIButton()
         button.layer.cornerRadius = 15
         button.backgroundColor = UIColor(named: "SignatureColor")
@@ -199,8 +200,8 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     var activateButton = false
     var linkBool = Bool()
     var titleBool = Bool()
-    init(delegate: ReloadDataDelegate? = nil, categoryPK: ObjectId? = nil, fk: ObjectId? = nil) {
-        self.delegate = delegate
+    init(/*delegate: ReloadDataDelegate? = nil,*/ categoryPK: ObjectId? = nil, fk: ObjectId? = nil) { //딜리게이트
+//        self.delegate = delegate
         self.categoryPK = categoryPK
         self.fk = fk
        super.init(nibName: nil, bundle: nil)
@@ -223,7 +224,6 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "링크 추가하기"
-
         list = realm.objects(CateGoryRealm.self)
         detailResult = realm.objects(detailCateGory.self)
         addTargetSetup()
@@ -235,6 +235,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
         linkPasteButton.configuration?.attributedTitle?.font  = .system(size: 11)
         showData()
         
+
     }
     func showData() {
         
@@ -242,6 +243,12 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
             let originalData = detailResult.where {
                 $0._id == fk!
             }
+            linkPasteButton.configuration?.attributedTitle = ""
+            linkPasteButton.configuration?.image = UIImage(systemName: "checkmark")
+            
+            linkTextField.isEnabled = false
+            linkPasteButton.isEnabled = false
+            
             addButton.setTitle("변경 완료", for: .normal)
             addButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 23)
             linkTextField.text = originalData.first!.link
@@ -249,6 +256,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
             memoTextView.text = originalData.first!.memo
             titleTextCountLabel.text = "\(titleTextField.text!.count)/30"
             memoTextCountLabel.text = "\(memoTextView.text!.count) /100"
+            linkViewModel.linkTitle.value = titleTextField.text ?? ""
             
             linkViewModel.checkValidation()
         }
@@ -258,7 +266,6 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     
     
 
-  
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
@@ -303,6 +310,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
         linkPasteButton.configuration?.attributedTitle = ""
         linkPasteButton.configuration?.showsActivityIndicator = true
    
+        
 
         if linkTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty ==  true {
             linkTextField.text = ""
@@ -313,6 +321,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
                 pasteButtonSetup()
                 return }
             linkTextField.text = pasteString
+            
             
             receiveMetaData(url: pasteString)
         } else {
@@ -364,6 +373,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
                if text.count > maxLength {
                    memoTextView.text = String(text.prefix(maxLength))
                }
+          
         memoTextCountLabel.text = "(\(memoTextView.text.count)/100)"
     }
     
@@ -371,15 +381,13 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     
 
     @objc func addButtonTapped(canTap: Bool) {
-     
-        if activateButton == true {
-            
-            if validd == true {
-                if fk == nil {
-                    
+        if fk == nil {
+            if activateButton == true {
+                
+                if validd == true {
                     
                     let allcategory = list.first!.detail
-                    let data = detailCateGory(link: linkTextField.text!, title: titleTextField.text!, memo: memoTextView.text ?? "" , likeLink: false, onlyAll: true)
+                    let data = detailCateGory(link: linkTextField.text! ,title: titleTextField.text!, searchTitle: titleTextField.text!.lowercased(), memo: memoTextView.text ?? "" , likeLink: false, onlyAll: true)
                     
                     if categoryPK == nil {
                         try! realm.write{
@@ -393,7 +401,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
                         try! realm.write{
                             allcategory.append(data)
                             let realLink = allcategory.last!._id
-                            detailCategory.first!.detail.append(detailCateGory(link: linkTextField.text!, title: titleTextField.text!, memo: memoTextView.text ?? "", likeLink: false, onlyAll: false))
+                            detailCategory.first!.detail.append(detailCateGory(link: linkTextField.text!, title: titleTextField.text!, searchTitle: titleTextField.text!.lowercased(), memo: memoTextView.text ?? "", likeLink: false, onlyAll: false))
                             detailCategory.first!.detail.last!.fk = realLink
                             
                         }
@@ -401,50 +409,64 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
                     
                     self.saveIamgeToDocument(fileName: "\(allcategory.last!._id)", image: (temporaryUIImageData ?? UIImage(named: "NOPickture"))!)
                     
-                    delegate!.recevieCollectionViewReloadData()
+                    //                    delegate!.recevieCollectionViewReloadData() //딜리게이트
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                     
                     
                     dismiss(animated: true)
                     
-                } else {
-                    let data = detailResult.where {
-                        $0.fk == fk!
+                    
+                    
+                }
+                else {
+                    
+                    showtoast(title: "제목을 입력해 주세요.")
+                    warningTitleLabel.isHidden = false
+                    titleUnderBarUIView.backgroundColor = .red
+                }
+            }
+            
+            else {
+                linkUnderBarUIView.backgroundColor = .red
+                showtoast(title: "불러오기 버튼을 눌러주세요.")
+                linkUnderBarUIView.backgroundColor = .red
+                warningLinkLabel.isHidden = false
+            }
+            
+        }
+        else {
+            
+            if  titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
+                showtoast(title: "제목을 입력해 주세요.")
+                titleUnderBarUIView.backgroundColor = .red
+                warningTitleLabel.isHidden = false
+               return
+           }
+            else {
+                print("있다 제목")
+                    
+                let data = detailResult.where {
+                    $0.fk == fk!
+                }
+                try! realm.write {
+                    for i in 0...data.count - 1{
+                        data[i].title = titleTextField.text!
+                        data[i].memo = memoTextView.text ?? ""
+                        data[i].searchTitle = titleTextField.text!.lowercased()
                     }
-                    removeImageFromDocument(fileName: String(describing: data.first!.fk))
-                    self.saveIamgeToDocument(fileName: String(describing: data.first!.fk), image: temporaryUIImageData ?? UIImage(named: "NOPickture")! )
-             
-                    try! realm.write {
-                            for i in 0...data.count - 1{
-                                data[i].link = linkTextField.text!
-                                data[i].title = titleTextField.text!
-                                data[i].memo = memoTextView.text ?? ""
-                            }
-                        }
-                    
-                    
-                    delegate?.recevieCollectionViewReloadData()
-                    dismiss(animated: true)
                 }
                 
                 
+                //                    delegate?.recevieCollectionViewReloadData() //딜리게이트
+                NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                
+                dismiss(animated: true)
+                
+                
             }
-            else {
-                titleTextField.placeholder = "제목을 입력해 주세요.(필수)"
-                warningTitleLabel.isHidden = false
-                titleUnderBarUIView.backgroundColor = .red
-            }
+            
         }
         
-        else {
-            linkUnderBarUIView.backgroundColor = .red
-            showtoast(title: "불러오기 버튼을 눌러주세요")
-            linkUnderBarUIView.backgroundColor = .red
-            warningLinkLabel.isHidden = false
-        }
-        
-        
-       
     }
     
     
@@ -469,6 +491,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
                               
                                 self.temporaryUIImageData = image
                                 self.temporaryTitleData = metadata.title
+                                
                                 linkUnderBarUIView.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
                                 warningLinkLabel.isHidden = true
                                 showAlertHandle()
@@ -520,7 +543,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     
     func showAlert(err: String, message: String) {
            
-           let alert = UIAlertController(title: err, message: message, preferredStyle: .actionSheet)
+           let alert = UIAlertController(title: err, message: message, preferredStyle: .alert)
            let ok = UIAlertAction(title: "확인", style: .default)
            alert.addAction(ok)
            present(alert, animated: true)
@@ -534,7 +557,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     func showAlertHandle() {
         
         let alertController = UIAlertController(title: "제목을 자동생성 하시겠습니까?", message: nil, preferredStyle: .alert)
-        let actionDefault = UIAlertAction(title: "네", style: .destructive) { [self] action in
+        let actionDefault = UIAlertAction(title: "네", style: .default) { [self] action in
             self.titleTextField.text = self.temporaryTitleData
             linkViewModel.linkTitle.value = String(titleTextField.text!.prefix(30))
             titleTextCountLabel.text = "\(titleTextField.text?.count ?? 0)/30"
@@ -543,7 +566,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
             linkViewModel.checkValidation()
         }
         
-        let actionCancel = UIAlertAction(title: "아니오", style: .cancel)
+        let actionCancel = UIAlertAction(title: "아니오", style: .destructive)
         
         alertController.addAction(actionCancel)
         alertController.addAction(actionDefault)

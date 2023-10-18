@@ -18,10 +18,11 @@ class LikeCategoryViewController: BaseViewController, UIViewControllerTransition
     let detailCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        let spacing : CGFloat = 5
+        let spacing : CGFloat = 16
         let width = UIScreen.main.bounds.width - (spacing * 3)
         view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
         view.backgroundColor = UIColor(named: "BackgroundColor")
+        view.alwaysBounceVertical = true
         layout.itemSize = CGSize(width: width / 2, height: width / 1.7)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         layout.minimumInteritemSpacing = spacing
@@ -45,11 +46,15 @@ class LikeCategoryViewController: BaseViewController, UIViewControllerTransition
      title = "Like"
         
         list = realm.objects(CateGoryRealm.self)
-        detailCollectionView.reloadData()
+//        detailCollectionView.reloadData()
         detailCategory = realm.objects(detailCateGory.self)
         
+        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
     }
-  
+    @objc func collectionViewReloadData() {
+        detailCollectionView.reloadData()
+    
+    }
     override func configure() {
         super.configure()
         
@@ -120,7 +125,7 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
         let data = detailCategory.where{
-            $0.onlyAll == true
+            $0.onlyAll == true && $0.likeLink == true
         }
         let resultData = data.reversed()[indexPath.row]
         let linkLike =  data.reversed()[indexPath.row].likeLink
@@ -141,7 +146,7 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
                         }
                     }
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                        collectionView.reloadData()
+                  
                     
                 }
                     
@@ -150,7 +155,7 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
                     
                     let vc = AddToAnotherCategoryViewController(fk: resultData._id)
                     let nav = UINavigationController(rootViewController: vc)
-                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                    
                     self.present(nav, animated: true)
   
                 }
@@ -168,7 +173,7 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
                 }
                
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddLink(delegate: self, fk: resultData._id)
+                    let vc = AddLink(/*delegate: self, */fk: resultData._id)  //딜리게이트
                     let nav = UINavigationController(rootViewController: vc)
                     
                     self.present(nav, animated: true)
@@ -184,7 +189,7 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
            
                     }
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                    collectionView.reloadData()
+                    
                 }
                 let parentsRealdeletMenu = UIMenu(options: .displayInline, children: [realdeletAction])
                 return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
@@ -202,7 +207,7 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
     
     func goSafari(indexPath : Int) {
         let data = self.detailCategory.where{
-            $0.onlyAll == true
+            ($0.onlyAll == true) && ($0.likeLink == true)
         }
         guard let url = URL(string: data.reversed()[indexPath].link  ) else { return }
          let safariVC = SFSafariViewController(url: url)
@@ -213,12 +218,12 @@ extension LikeCategoryViewController: UICollectionViewDataSource, UICollectionVi
     }
 
 }
-extension LikeCategoryViewController: ReloadDataDelegate {
-    func recevieCollectionViewReloadData() {
-        detailCollectionView.reloadData()
-    }
+//extension LikeCategoryViewController: ReloadDataDelegate { //딜리게이트
+//    func recevieCollectionViewReloadData() {
+//        detailCollectionView.reloadData()
+//    }
     
     
-}
+//}
 
 

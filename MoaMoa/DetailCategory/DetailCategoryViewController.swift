@@ -17,7 +17,7 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
     let detailCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        let spacing : CGFloat = 5
+        let spacing : CGFloat = 16
         let width = UIScreen.main.bounds.width - (spacing * 3)
         view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
         view.backgroundColor = UIColor(named: "BackgroundColor")
@@ -39,6 +39,22 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         return view
     }()
     
+    lazy var addLinkButton = {
+         let view = UIButton()
+         let imageConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .bold)
+                let image = UIImage(systemName: "plus", withConfiguration: imageConfig)
+                
+         view.setImage(image, for: .normal)
+         view.tintColor = .white
+         view.backgroundColor = UIColor(named: "SignatureColor")
+         view.layer.cornerRadius = view.layer.frame.size.width / 2
+         view.clipsToBounds = true
+         
+    
+         return view
+     }()
+
+    
     init( categoryPK: ObjectId? = nil) {
         super.init(nibName: nil, bundle: nil)
         self.categoryPK = categoryPK
@@ -46,6 +62,13 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        addLinkButton.layer.cornerRadius = addLinkButton.layer.frame.size.width / 2
+        addLinkButton.clipsToBounds = true
+        
     }
     
     override func viewDidLoad() {
@@ -56,12 +79,25 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
      
         addLink()
         print(#function)
-        detailCollectionView.reloadData()
+//        detailCollectionView.reloadData()
         detailCategory = realm.objects(detailCateGory.self)
-        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
         
-      
+        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
+ 
     }
+    
+    func addLink() {
+ 
+        addLinkButton.addTarget(self, action: #selector(addLinkButtonTapped), for: .touchUpInside)
+    }
+    @objc func addLinkButtonTapped() {
+        let vc = AddLink(/*delegate: self, */categoryPK: nil)//딜리게이트
+        let nav = UINavigationController(rootViewController: vc)
+        
+       present(nav, animated: true)
+    }
+
+    
     func showCategoryTitle() {
         let categoryTitle = list.where {
             $0._id == categoryPK!
@@ -76,20 +112,14 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
     
     }
    
-    func addLink() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
-    }
-    @objc func addLinkButtonTapped() {
-        let vc = AddLink(delegate: self, categoryPK: categoryPK)
-        present(vc, animated: true)
-        
-    }
+    
     
     override func configure() {
         super.configure()
         
         view.addSubview(detailCollectionView)
         view.addSubview(noLinkLabel)
+        view.addSubview(addLinkButton)
         detailCollectionView.dataSource = self
         detailCollectionView.delegate = self
     }
@@ -104,6 +134,13 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         noLinkLabel.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        addLinkButton.snp.makeConstraints { make in
+            make.size.equalTo(50)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(35)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(35)
+        }
+        
     }
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "offMemo"), object: nil)
@@ -154,13 +191,15 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
     
     func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard let indexPath = indexPaths.first else { return nil }
-        let data = detailCategory.where{
-            $0.onlyAll == true
+       
+        let data = self.list.where{
+            $0._id == categoryPK!
         }
-        let resultData = data.reversed()[indexPath.row]
-        let linkLike =  data.reversed()[indexPath.row].likeLink
-        let detailData = detailCategory.where {
-            $0.fk == resultData._id
+        
+        let resultData = data.first!.detail.reversed()[indexPath.row]
+        let linkLike =  resultData.likeLink
+        let likeData = detailCategory.where {
+            $0.fk == resultData.fk
         }
         let shareUrl = URL(string: resultData.link)
         
@@ -170,13 +209,12 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                 
                 let likeAction = UIAction(title: linkLike ? "즐겨찾기 해제" : "즐겨찾기", subtitle: nil, image: linkLike ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     try! self.realm.write {
-                        
-                        for i in 0...detailData.count - 1{
-                            detailData[i].likeLink.toggle()
+                                            for i in 0...likeData.count - 1{
+                            likeData[i].likeLink.toggle()
                         }
                     }
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                        collectionView.reloadData()
+                        
                     }
                 
                
@@ -185,7 +223,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                     
                     let vc = AddToAnotherCategoryViewController(fk: resultData._id)
                     let nav = UINavigationController(rootViewController: vc)
-                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                    
                     self.present(nav, animated: true)
   
                 }
@@ -201,7 +239,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                         
                 }
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddLink(delegate: self, fk: resultData._id)
+                    let vc = AddLink(/*delegate: self, */fk: resultData._id) //딜리게이트
                     let nav = UINavigationController(rootViewController: vc)
                     
                     self.present(nav, animated: true)
@@ -219,7 +257,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                         self.realm.delete(categoryData)
                     }
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                    collectionView.reloadData()
+                    
                 }
                 
               
@@ -232,7 +270,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                         self.realm.delete(deleteData)
            
                     }
-                    collectionView.reloadData()
+                    
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                 }
                 let parentsRealdeletMenu = UIMenu(options: .displayInline, children: [realdeletAction])
@@ -252,10 +290,10 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
     }
     
     func goSafari(indexPath : Int) {
-        let data = self.detailCategory.where{
-            $0.onlyAll == true
+        let data = self.list.where{
+            $0._id == categoryPK!
         }
-        guard let url = URL(string: data.reversed()[indexPath].link  ) else { return }
+        guard let url = URL(string: data.first!.detail.reversed()[indexPath].link  ) else { return }
          let safariVC = SFSafariViewController(url: url)
          safariVC.transitioningDelegate = self
          safariVC.modalPresentationStyle = .pageSheet
@@ -265,12 +303,12 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
     
 }
 
-extension DetailCategoryViewController: ReloadDataDelegate {
-    func recevieCollectionViewReloadData() {
-        detailCollectionView.reloadData()
-    }
+//extension DetailCategoryViewController: ReloadDataDelegate {
+//    func recevieCollectionViewReloadData() {
+//        detailCollectionView.reloadData()
+//    }
+//    
     
-    
-}
+//}
 
 

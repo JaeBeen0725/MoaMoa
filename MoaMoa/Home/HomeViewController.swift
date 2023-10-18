@@ -19,7 +19,14 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     var detailCategory: Results<detailCateGory>!
     let linkSearchBar = UISearchBar()
 
-    
+    let largeTitleLabel = {
+        let view = UILabel()
+        view.text = "모아모아"
+        view.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+        view.backgroundColor = .clear
+        
+        return view
+    }()
     
     let homeCollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -29,7 +36,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         
         view.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: "HomeCollectionViewCell")
         view.backgroundColor = UIColor(named: "BackgroundColor")
-
+        view.alwaysBounceVertical = true
         layout.itemSize = CGSize(width: width / 2, height: width / 1.7)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         layout.minimumInteritemSpacing = spacing
@@ -47,11 +54,35 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         return view
     }()
     
+   lazy var addLinkButton = {
+        let view = UIButton()
+        let imageConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .bold)
+               let image = UIImage(systemName: "plus", withConfiguration: imageConfig)
+               
+        view.setImage(image, for: .normal)
+        view.tintColor = .white
+        view.backgroundColor = UIColor(named: "SignatureColor")
+        view.layer.cornerRadius = view.layer.frame.size.width / 2
+        view.clipsToBounds = true
+        
+   
+        return view
+    }()
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        addLinkButton.layer.cornerRadius = addLinkButton.layer.frame.size.width / 2
+        addLinkButton.clipsToBounds = true
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "홈화면"
         
-        self.navigationController?.navigationBar.tintColor = UIColor(named: "SignatureColor")
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: largeTitleLabel)
+        
+        self.navigationController?.navigationBar.tintColor = UIColor(named: "reversedSystemBackgroundColor")
         
        
         
@@ -64,11 +95,15 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
      
         
         print(realm.configuration.fileURL)
-        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
         
-      
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(searchbuttonTapped))
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
     }
-    
+    @objc func searchbuttonTapped() {
+        navigationController?.pushViewController(HomeSearchViewController(), animated: true)
+        
+    }
     
     @objc func collectionViewReloadData() {
         homeCollectionView.reloadData()
@@ -88,17 +123,18 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         linkSearchBar.showsCancelButton = true
         linkSearchBar.delegate = self
         linkSearchBar.placeholder = "Search link"
+        
         self.linkSearchBar.searchBarStyle = .minimal
         
-        navigationItem.hidesSearchBarWhenScrolling = false
+//        navigationItem.hidesSearchBarWhenScrolling = false
     }
     
     func addLink() {
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addLinkButtonTapped))
+ 
+        addLinkButton.addTarget(self, action: #selector(addLinkButtonTapped), for: .touchUpInside)
     }
     @objc func addLinkButtonTapped() {
-        let vc = AddLink(delegate: self, categoryPK: nil)
+        let vc = AddLink(/*delegate: self, */categoryPK: nil)//딜리게이트
         let nav = UINavigationController(rootViewController: vc)
         
        present(nav, animated: true)
@@ -107,9 +143,11 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     
     override func configure() {
         super.configure()
+
         view.addSubview(homeCollectionView)
-        view.addSubview(linkSearchBar)
+//        view.addSubview(linkSearchBar)
         view.addSubview(noLinkLabel)
+        view.addSubview(addLinkButton)
         homeCollectionView.keyboardDismissMode = .onDrag
         
         
@@ -117,23 +155,31 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
 
     override func setContraints() {
         super.setContraints()
-        
-        linkSearchBar.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.height.equalTo(38)
-        
-        }
+   
+//        linkSearchBar.snp.makeConstraints { make in
+//            make.top.equalTo(view.safeAreaLayoutGuide)
+//            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+//            make.height.equalTo(38)
+//        
+//        }
         homeCollectionView.snp.makeConstraints { make in
-            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
-            make.top.equalTo(linkSearchBar.snp.bottom)
-           
+//            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
+//            make.top.equalTo(linkSearchBar.snp.bottom)
+            make.edges.equalTo(view.safeAreaLayoutGuide)
         }
         
         
         noLinkLabel.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        
+        addLinkButton.snp.makeConstraints { make in
+            make.size.equalTo(50)
+            make.trailing.equalTo(view.safeAreaLayoutGuide).inset(35)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(35)
+        }
+        
+        
     }
     
 }
@@ -176,7 +222,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                             }
                         }
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                        collectionView.reloadData()
+                    
                     }
                 let addToAnotherCategory = UIAction(title: "카테고리에 추가", subtitle: nil, image: UIImage(systemName: "rectangle.badge.plus"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     
@@ -199,7 +245,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 }
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddLink(delegate: self, fk: resultData._id)
+                    let vc = AddLink(/*delegate: self, */fk: resultData._id) //딜리게이트
                     let nav = UINavigationController(rootViewController: vc)
                     
                     self.present(nav, animated: true)
@@ -217,7 +263,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                         self.realm.delete(deleteData)
            
                     }
-                    collectionView.reloadData()
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
                 }
                 let parentsRealdeletMenu = UIMenu(options: .displayInline, children: [realdeletAction])
                 return UIMenu(title: "", image: nil, identifier: nil, options: UIMenu.Options.displayInline,
@@ -293,18 +339,22 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     extension HomeViewController:  UISearchBarDelegate, UISearchControllerDelegate {
         func updateSearchResults(for searchController: UISearchController) {
-        }
+        
         func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+            
             detailCategory = realm.objects(detailCateGory.self)
-            guard let text = searchBar.text else { return }
-            let data = detailCategory.where{
-                $0.onlyAll == true && $0.title.contains(text)
+            guard let lowercasedText = searchBar.text else { return }
+        
+            let data = detailCategory.where {
+                $0.onlyAll == true && $0.searchTitle.contains(lowercasedText.lowercased())
             }
+          
+            
             let emptyData = detailCategory.where{
                 $0.link.contains("$%^$&")
             }
             
-            print(data)
+//            print(data)
             if data.count >= 1 {
                 detailCategory = data
                 
@@ -318,19 +368,22 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
             searchBar.text = ""
-            detailCategory = realm.objects(detailCateGory.self)
+            let emptyData = detailCategory.where{
+                $0.link.contains("$%^$&")
+            }
+            detailCategory = emptyData
             homeCollectionView.reloadData()
         }
         
         
     }
     
-extension HomeViewController: ReloadDataDelegate {
-    func recevieCollectionViewReloadData() {
-    
-            homeCollectionView.reloadData()
-        
-    }
+//extension HomeViewController: ReloadDataDelegate { //딜리게이트
+//    func recevieCollectionViewReloadData() {
+//    
+//            homeCollectionView.reloadData()
+//        
+//    }
     
     
 }

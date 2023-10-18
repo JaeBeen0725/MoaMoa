@@ -13,7 +13,16 @@ class CategoryViewController: BaseViewController {
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
     var resultt: Results<detailCateGory>!
-    var delegate: ReloadDataDelegate?
+//    var delegate: ReloadDataDelegate?  //딜리게이트
+    
+    let largeTitleLabel = {
+        let view = UILabel()
+        view.text = "카테고리"
+        view.font = UIFont.systemFont(ofSize: 20, weight: .heavy)
+        view.backgroundColor = .clear
+        
+        return view
+    }()
     let categoryCollectionView = {
         let layout = UICollectionViewFlowLayout()
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -22,38 +31,43 @@ class CategoryViewController: BaseViewController {
         
         view.register(CategoryCollectionViewCell.self, forCellWithReuseIdentifier: "CategoryCollectionViewCell")
         view.backgroundColor = UIColor(named: "BackgroundColor")
-
+        view.alwaysBounceVertical = true
         layout.itemSize = CGSize(width: width / 2, height: width / 1.7)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         layout.minimumInteritemSpacing = spacing
         layout.minimumLineSpacing = spacing
         return view
     }()
+    
+ 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "카테고리"
-        
+//        title = "카테고리"
+//        navigationItem.title = "카테고리"
+//        navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: largeTitleLabel)
+        self.navigationController?.navigationBar.tintColor = UIColor(named: "reversedSystemBackgroundColor")
         
         list = realm.objects(CateGoryRealm.self)
         resultt = realm.objects(detailCateGory.self)
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(addCategory))
         
-        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
         
-      
+        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
     }
     
     
     @objc func collectionViewReloadData() {
         categoryCollectionView.reloadData()
     }
+
     
    
 
     
-    @objc func addCategory() {
-        let vc =  AddCategoryViewController(delegate: self)
+    @objc func addCategory() {       
+        let vc =  AddCategoryViewController()
         vc.modalPresentationStyle = .overFullScreen
      
         present( vc, animated: true)
@@ -62,6 +76,7 @@ class CategoryViewController: BaseViewController {
     
     override func configure() {
         super.configure()
+        
         view.addSubview(categoryCollectionView)
         categoryCollectionView.delegate = self
         categoryCollectionView.dataSource = self
@@ -70,7 +85,11 @@ class CategoryViewController: BaseViewController {
     
     override func setContraints() {
         super.setContraints()
+        
+     
         categoryCollectionView.snp.makeConstraints { make in
+//            make.top.equalTo(largeTitleLabel.snp.bottom)
+//            make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
@@ -123,7 +142,7 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
                 
                 
                 let modifyAction = UIAction(title: "카테고리 이름 변경", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddCategoryViewController(delegate: self, categoryPk: self.list[indexPath.row]._id)
+                    let vc = AddCategoryViewController(/*delegate: self, */categoryPk: self.list[indexPath.row]._id)  //딜리게이트
                     vc.modalPresentationStyle = .overFullScreen
                     self.present(vc, animated: true)
                 }
@@ -167,10 +186,10 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
     
 }
 
-extension CategoryViewController: ReloadDataDelegate {
-    func recevieCollectionViewReloadData() {
-        categoryCollectionView.reloadData()
-    }
+//extension CategoryViewController: ReloadDataDelegate { //딜리게이트 
+//    func recevieCollectionViewReloadData() {
+//        categoryCollectionView.reloadData()
+//    }
     
     
-}
+//}

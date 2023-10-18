@@ -61,7 +61,7 @@ class AddToAnotherCategoryViewController: CategoryViewController {
         
         if category.count == 0 {
             
-            let addData = detailCateGory(link: data.first!.link, title: data.first!.title, memo: data.first!.memo, likeLink: data.first!.likeLink, onlyAll: false)
+            let addData = detailCateGory(link: data.first!.link, title: data.first!.title, searchTitle: data.first!.title.lowercased(), memo: data.first!.memo, likeLink: data.first!.likeLink, onlyAll: false)
             try! realm.write {
                 list[indexPath.row + 2].detail.append(addData)
                 list[indexPath.row + 2].detail.last!.fk = data.first!._id
@@ -69,7 +69,7 @@ class AddToAnotherCategoryViewController: CategoryViewController {
         }
         NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
         dismiss(animated: true)
-//        navigationController?.popViewController(animated: false)
+
     }
     
 }
