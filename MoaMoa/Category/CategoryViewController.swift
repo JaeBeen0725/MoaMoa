@@ -169,7 +169,7 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
    
     
         if indexPath.row == 0 {
-            let vc = HomeViewController()
+            let vc = AllCategoryViewcontroller()
             navigationController?.pushViewController(vc, animated: true)
         } else if indexPath.row == 1 {
             navigationController?.pushViewController(LikeCategoryViewController(), animated: true)

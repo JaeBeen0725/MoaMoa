@@ -57,7 +57,7 @@ class HomeSearchViewController: BaseViewController, UIViewControllerTransitionin
         
         homeCollectionView.delegate = self
         homeCollectionView.dataSource = self
-        linkSearchBar.becomeFirstResponder()
+      
         
         
         detailCategory = realm.objects(detailCateGory.self)
@@ -68,13 +68,17 @@ class HomeSearchViewController: BaseViewController, UIViewControllerTransitionin
         }
         detailCategory = emptyData
         homeCollectionView.reloadData()
-        
-        
-        
-        
+ 
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        view.endEditing(true)
     }
  
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        linkSearchBar.becomeFirstResponder()
+    }
 
 
 

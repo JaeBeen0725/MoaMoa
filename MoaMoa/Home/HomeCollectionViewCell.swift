@@ -21,17 +21,18 @@ class HomeCollectionViewCell: BaseCollectionViewCell, UITextViewDelegate {
         
         layer.cornerRadius = 9
         layer.borderWidth = 0.4
+        layer.borderColor = UIColor(resource: .reversedSystemBackground).cgColor
         contentView.layer.cornerRadius = 9
-   
+        
         contentView.clipsToBounds = true
        
  
         contentView.addSubview(thumbnailImageView)
         contentView.addSubview(titleLabel)
+        contentView.addSubview(likeImage)
         contentView.addSubview(memoLabel)
         contentView.addSubview(showMemoButton)
 //        contentView.addSubview(closeMeMoButton)
-        contentView.addSubview(likeImage)
 //        thumbnailImageView.contentMode = .scaleToFill
        
         labelSetup(label: titleLabel, text: "", backgroundColor: UIColor(named: "CellTitleBackgroundColor")!, textColor: .black, textAlignment: .left)
@@ -51,32 +52,35 @@ class HomeCollectionViewCell: BaseCollectionViewCell, UITextViewDelegate {
        
         
         likeImage.tintColor = UIColor(named: "SignatureColor")
-        
-        showMemoButton.tintColor = UIColor(named: "reversedSystemBackgroundColor")!
-        
-        buttonSetup(button: showMemoButton, title: "", image: UIImage(systemName: "ellipsis.circle.fill"), backgrounColor: .clear, hidden: false, selector: #selector(showMemoButtonTapped))
-//        buttonSetup(button: cli, title: "", image: nil, backgrounColor: .clear, hidden: true, selector: #selector(closeMeMoButtonTapped))
-//       
+   
+
+        var config = UIImage.SymbolConfiguration(paletteColors: [.darkGray, .lightGray])
+        config = config.applying(UIImage.SymbolConfiguration(font: .systemFont(ofSize: 20.0)))
+     let showButtonImage = UIImage(systemName: "m.circle")?.withConfiguration(config)
+        showMemoButton.setImage(showButtonImage, for: .normal)
+        showMemoButton.addTarget(self, action: #selector(showMemoButtonTapped), for: .touchUpInside)
+      
         NotificationCenter.default.addObserver(self, selector: #selector(offMemo), name: NSNotification.Name( "offMemo"), object: nil)
         
     }
-//    @objc func closeMeMoButtonTapped() {
-//        memoLabel.isHidden = true
-//        showMemoButton.setImage(UIImage(systemName: "ellipsis.circle.fill"), for: .normal)
-////        closeMeMoButton.isHidden = true
-////        showMemoButton.isHidden = false
-//    }
+
     
     @objc func offMemo() {
+        var config = UIImage.SymbolConfiguration(paletteColors: [.darkGray, .lightGray])
+        config = config.applying(UIImage.SymbolConfiguration(font: .systemFont(ofSize: 20.0)))
+     let showButtonImage = UIImage(systemName: "m.circle")?.withConfiguration(config)
         memoLabel.isHidden = true
-        showMemoButton.setImage(UIImage(systemName: "ellipsis.circle.fill"), for: .normal)
+        showMemoButton.setImage(showButtonImage, for: .normal)
 //        closeMeMoButton.isHidden = true
 //        showMemoButton.isHidden = false
     }
     
     @objc func showMemoButtonTapped() {
+        var config = UIImage.SymbolConfiguration(paletteColors: [.darkGray, .lightGray])
+        config = config.applying(UIImage.SymbolConfiguration(font: .systemFont(ofSize: 20.0)))
+     let showButtonImage = UIImage(systemName: "m.circle")?.withConfiguration(config)
         memoLabel.isHidden.toggle()
-        memoLabel.isHidden == true ?   showMemoButton.setImage(UIImage(systemName: "ellipsis.circle.fill"), for: .normal) : showMemoButton.setImage(nil, for: .normal)
+        memoLabel.isHidden == true ? showMemoButton.setImage(showButtonImage, for: .normal): showMemoButton.setImage(nil, for: .normal)
         
 //        showMemoButton.isHidden = true
 //        closeMeMoButton.isHidden = false
@@ -118,7 +122,7 @@ class HomeCollectionViewCell: BaseCollectionViewCell, UITextViewDelegate {
         
         likeImage.snp.makeConstraints { make in
             make.size.equalTo(20)
-            make.leading.equalToSuperview().inset(4)
+            make.leading.equalTo(thumbnailImageView.snp.leading).inset(4)
             make.bottom.equalTo(titleLabel.snp.top).inset(-4)
         }
         

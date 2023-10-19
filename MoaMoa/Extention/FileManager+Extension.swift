@@ -30,14 +30,14 @@ extension UIViewController {
     
     func loadImageFromDocument(fileName: String) -> UIImage {
         
-        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {return UIImage(named: "NOPickture")!}
+        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {return UIImage(resource: .noPickture)}
         
         let fileURL = documentDirectory.appendingPathComponent(fileName)
         
         if FileManager.default.fileExists(atPath: fileURL.path) {
             return UIImage(contentsOfFile: fileURL.path)!
         } else {
-            return UIImage(named: "NOPickture")!
+            return UIImage(resource: .noPickture)
         }
     }
     

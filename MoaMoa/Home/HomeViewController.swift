@@ -100,6 +100,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         
         NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
     }
+    
     @objc func searchbuttonTapped() {
         navigationController?.pushViewController(HomeSearchViewController(), animated: true)
         
@@ -109,11 +110,12 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         homeCollectionView.reloadData()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationItem.hidesSearchBarWhenScrolling = true
-        
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        navigationItem.hidesSearchBarWhenScrolling = true
+//        
+//    }
+    
    
     func searchBar() {
         let cancelButtonAttributes = [NSAttributedString.Key.foregroundColor: UIColor(named: "reversedSystemBackgroundColor")]

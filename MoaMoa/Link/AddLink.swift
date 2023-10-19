@@ -228,7 +228,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
         detailResult = realm.objects(detailCateGory.self)
         addTargetSetup()
         checkBind()
-
+print(categoryPK)
         titleTextField.delegate = self
         memoTextView.delegate = self
         
@@ -248,7 +248,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
             
             linkTextField.isEnabled = false
             linkPasteButton.isEnabled = false
-            
+            title = "링크 변경"
             addButton.setTitle("변경 완료", for: .normal)
             addButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 23)
             linkTextField.text = originalData.first!.link
@@ -407,7 +407,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
                         }
                     }
                     
-                    self.saveIamgeToDocument(fileName: "\(allcategory.last!._id)", image: (temporaryUIImageData ?? UIImage(named: "NOPickture"))!)
+                    self.saveIamgeToDocument(fileName: "\(allcategory.last!._id)", image: temporaryUIImageData ?? UIImage(resource: .noPickture))
                     
                     //                    delegate!.recevieCollectionViewReloadData() //딜리게이트
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )

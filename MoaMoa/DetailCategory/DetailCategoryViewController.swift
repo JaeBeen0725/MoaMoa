@@ -75,10 +75,10 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         super.viewDidLoad()
         list = realm.objects(CateGoryRealm.self)
         showCategoryTitle()
-        
+        print("categoryPK", categoryPK)
      
         addLink()
-        print(#function)
+        
 //        detailCollectionView.reloadData()
         detailCategory = realm.objects(detailCateGory.self)
         
@@ -91,7 +91,7 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         addLinkButton.addTarget(self, action: #selector(addLinkButtonTapped), for: .touchUpInside)
     }
     @objc func addLinkButtonTapped() {
-        let vc = AddLink(/*delegate: self, */categoryPK: nil)//딜리게이트
+        let vc = AddLink(/*delegate: self, */categoryPK: categoryPK)//딜리게이트
         let nav = UINavigationController(rootViewController: vc)
         
        present(nav, animated: true)
