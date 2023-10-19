@@ -228,7 +228,7 @@ class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
         detailResult = realm.objects(detailCateGory.self)
         addTargetSetup()
         checkBind()
-print(categoryPK)
+
         titleTextField.delegate = self
         memoTextView.delegate = self
         

@@ -94,7 +94,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         detailCategory = realm.objects(detailCateGory.self)
      
         
-        print(realm.configuration.fileURL)
+        
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(searchbuttonTapped))
         
