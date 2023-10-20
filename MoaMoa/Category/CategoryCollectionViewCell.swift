@@ -17,18 +17,14 @@ class CategoryCollectionViewCell: BaseCollectionViewCell {
         super.configure()
      
         
-        
-        layer.cornerRadius = 12
-    
         contentView.layer.cornerRadius = 12
+        contentView.clipsToBounds = true
         
-        thumbnailImageView.layer.borderWidth = 0.4
-        thumbnailImageView.layer.cornerRadius = 12
-        thumbnailImageView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        contentView.layer.borderWidth = 0.4
+        
         contentView.addSubview(categoryTitle)
         contentView.addSubview(thumbnailImageView)
-
-        contentView.clipsToBounds = true
+//        contentView.clipsToBounds = true
         if categoryTitle.adjustsFontSizeToFitWidth == false {
             categoryTitle.adjustsFontSizeToFitWidth = true
                }

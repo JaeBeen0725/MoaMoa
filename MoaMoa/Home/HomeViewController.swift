@@ -380,13 +380,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
     }
     
-//extension HomeViewController: ReloadDataDelegate { //딜리게이트
-//    func recevieCollectionViewReloadData() {
-//    
-//            homeCollectionView.reloadData()
-//        
-//    }
-    
+ 
     
 }
 

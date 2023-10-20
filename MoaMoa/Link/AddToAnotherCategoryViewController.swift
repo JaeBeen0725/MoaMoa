@@ -67,6 +67,7 @@ class AddToAnotherCategoryViewController: CategoryViewController {
                 list[indexPath.row + 2].detail.last!.fk = data.first!._id
             }
         }
+        
         NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
         dismiss(animated: true)
 

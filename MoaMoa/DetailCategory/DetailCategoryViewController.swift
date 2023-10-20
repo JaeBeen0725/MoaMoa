@@ -221,7 +221,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                 let addToAnotherCategory = UIAction(title: "카테고리에 추가", subtitle: nil, image: UIImage(systemName: "rectangle.badge.plus"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
                     
                     
-                    let vc = AddToAnotherCategoryViewController(fk: resultData._id)
+                    let vc = AddToAnotherCategoryViewController(fk: resultData.fk)
                     let nav = UINavigationController(rootViewController: vc)
                     
                     self.present(nav, animated: true)

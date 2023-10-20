@@ -68,8 +68,12 @@ class HomeSearchViewController: BaseViewController, UIViewControllerTransitionin
         }
         detailCategory = emptyData
         homeCollectionView.reloadData()
- 
+        NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
     }
+    @objc func collectionViewReloadData() {
+        homeCollectionView.reloadData()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)

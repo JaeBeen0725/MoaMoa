@@ -144,33 +144,59 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
             
             titleUnderBarUIView.backgroundColor = .red
             warningTitleLabel.isHidden = false
-            
-            
         }
-        
         else {
+            
             if categoryPk == nil {
-                let data = CateGoryRealm(title: titleTextField.text ?? "")
-                try! realm.write{
-                    realm.add(data)
+                
+                
+                let categorylist = list.where {
+                    $0.title == titleTextField.text ?? ""
                 }
                 
-//                delegate?.recevieCollectionViewReloadData() //딜리게이트
-                NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                dismiss(animated: true)
+                if categorylist.count == 0 {
+                    let data = CateGoryRealm(title: titleTextField.text ?? "")
+                    
+                    try! realm.write{
+                        realm.add(data)
+                    }
+                    
+                    //                delegate?.recevieCollectionViewReloadData() //딜리게이트
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                    dismiss(animated: true)
+                } else {
+                    showtoast(title: "중복된 타이틀입니다.")
+                    titleUnderBarUIView.backgroundColor = .red
+                }
+                
             } else {
+                let categorylist = list.where {
+                    $0.title == titleTextField.text ?? ""
+                }
+                if categorylist.count == 0 {
+                    
+                    let category = list.where {
+                        $0._id == categoryPk!
+                    }
+                    
+                    try! realm.write{
+                        category.first!.title = titleTextField.text ?? ""
+                    }
+                    //                delegate?.recevieCollectionViewReloadData() //딜리게이트
+                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+                    dismiss(animated: true)
+                } else {
+                    showtoast(title: "중복된 타이틀입니다.")
+                    titleUnderBarUIView.backgroundColor = .red
+                    
+                }
                 
-                let category = list.where {
-                    $0._id == categoryPk!
-                }
-                try! realm.write{
-                    category.first!.title = titleTextField.text ?? ""
-                }
-//                delegate?.recevieCollectionViewReloadData() //딜리게이트
-                NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                dismiss(animated: true)
+                
+                
                 
             }
+            
+            
         }
     }
     
@@ -189,6 +215,11 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         view.endEditing(true)
        
+    }
+    
+    func showtoast(title: String) {
+        self.view.makeToast(title, duration: 1.5,
+                            position: .center)
     }
    
     override func configure() {
