@@ -8,7 +8,7 @@
 import UIKit
 import RealmSwift
 
-class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
+class AddCategoryView: BaseViewController, UITextFieldDelegate  {
     
     let titleLabel = {
        let view = UILabel()
@@ -79,13 +79,14 @@ class AddCategoryViewController: BaseViewController, UITextFieldDelegate  {
     }()
   
     
-//    var delegate: ReloadDataDelegate?
+
     let realm = try! Realm()
     var categoryPk : ObjectId?
     var list: Results<CateGoryRealm>!
     
-    init(/*delegate: ReloadDataDelegate? = nil,*/ categoryPk: ObjectId? = nil) {
-//        self.delegate = delegate
+    
+    init(categoryPk: ObjectId? = nil) {
+
         self.categoryPk = categoryPk
         super.init(nibName: nil, bundle: nil)
     }
