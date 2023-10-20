@@ -201,7 +201,7 @@ extension HomeSearchViewController: UICollectionViewDataSource, UICollectionView
                 }
                 
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddLink(/*delegate: self, */fk: resultData._id) //딜리게이트
+                    let vc = AddLinkViewController(/*delegate: self, */fk: resultData._id) //딜리게이트
                     let nav = UINavigationController(rootViewController: vc)
                     
                     self.present(nav, animated: true)

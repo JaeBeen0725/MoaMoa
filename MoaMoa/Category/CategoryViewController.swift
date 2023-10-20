@@ -67,7 +67,7 @@ class CategoryViewController: BaseViewController {
 
     
     @objc func addCategory() {       
-        let vc =  AddCategoryViewController()
+        let vc =  AddCategoryView()
         vc.modalPresentationStyle = .overFullScreen
      
         present( vc, animated: true)
@@ -142,7 +142,7 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
                 
                 
                 let modifyAction = UIAction(title: "카테고리 이름 변경", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddCategoryViewController(/*delegate: self, */categoryPk: self.list[indexPath.row]._id)  //딜리게이트
+                    let vc = AddCategoryView(/*delegate: self, */categoryPk: self.list[indexPath.row]._id)  //딜리게이트
                     vc.modalPresentationStyle = .overFullScreen
                     self.present(vc, animated: true)
                 }

@@ -91,7 +91,7 @@ class DetailCategoryViewController: BaseViewController, UIViewControllerTransiti
         addLinkButton.addTarget(self, action: #selector(addLinkButtonTapped), for: .touchUpInside)
     }
     @objc func addLinkButtonTapped() {
-        let vc = AddLink(/*delegate: self, */categoryPK: categoryPK)//딜리게이트
+        let vc = AddLinkViewController(/*delegate: self, */categoryPK: categoryPK)//딜리게이트
         let nav = UINavigationController(rootViewController: vc)
         
        present(nav, animated: true)
@@ -239,7 +239,7 @@ extension DetailCategoryViewController: UICollectionViewDataSource, UICollection
                         
                 }
                 let modifyAction = UIAction(title: "편집", subtitle: nil, image: UIImage(systemName: "pencil"), identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddLink(/*delegate: self, */fk: resultData._id) //딜리게이트
+                    let vc = AddLinkViewController(/*delegate: self, */fk: resultData._id) //딜리게이트
                     let nav = UINavigationController(rootViewController: vc)
                     
                     self.present(nav, animated: true)

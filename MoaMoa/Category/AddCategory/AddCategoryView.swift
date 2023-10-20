@@ -36,6 +36,10 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         view.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
         view.textColor = .gray
         view.textAlignment = .right
+        if view.adjustsFontSizeToFitWidth == false {
+            view.adjustsFontSizeToFitWidth = true
+               }
+        view.text = "(0/15)"
         return view
     }()
     
@@ -84,6 +88,7 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
     var categoryPk : ObjectId?
     var list: Results<CateGoryRealm>!
     
+    let addCategoryViewModel = AddCategoryViewModel()
     
     init(categoryPk: ObjectId? = nil) {
 
@@ -97,31 +102,23 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
         view.backgroundColor = UIColor.init(_colorLiteralRed: 0, green: 0, blue: 0, alpha: 0.0)
-        
         view.isOpaque = false
-        
         titleTextField.becomeFirstResponder()
         
-       
-        
-        titleTextField.delegate = self
-        titleTextCountLabel.text = "(0/15)"
         list = realm.objects(CateGoryRealm.self)
         
         showData()
-        if titleTextCountLabel.adjustsFontSizeToFitWidth == false {
-            titleTextCountLabel.adjustsFontSizeToFitWidth = true
-               }
+        
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         cancleButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        titleTextField.addTarget(self, action: #selector(textFieldDidChanged), for: .editingChanged)
+        titleTextField.addTarget(self, action: #selector(titleTextFieldDidChanged), for: .touchUpInside)
+        
         
     }
   
-    @objc func textFieldDidChanged() {
+    @objc func titleTextFieldDidChanged() {
+        
         titleUnderBarUIView.backgroundColor = .systemBackground
         warningTitleLabel.isHidden = true
         if titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
@@ -131,15 +128,14 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         titleTextField.text = String(titleTextField.text!.prefix(20))
         titleTextCountLabel.text = "(\(String(describing: titleTextField.text!.count))/20)"
     }
+
+    
     
     @objc func cancelButtonTapped() {
        
        dismiss(animated: true)
         
     }
-    
-    
-    
     @objc func addButtonTapped() {
         if titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
             
@@ -191,15 +187,14 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
                     titleUnderBarUIView.backgroundColor = .red
                     
                 }
-                
-                
-                
+        
                 
             }
             
             
         }
     }
+    
     
     func showData() {
         if categoryPk != nil {
@@ -223,8 +218,13 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
                             position: .center)
     }
    
+    
+    
+    
+    
     override func configure() {
         super.configure()
+        titleTextField.delegate = self
        
         view.addSubview(backgroundView)
         view.addSubview(titleLabel)
@@ -237,6 +237,7 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         
         
     }
+    
     
     override func setContraints() {
         super.setContraints()

@@ -19,7 +19,7 @@ import Toast
 //    
 //}
 
-class AddLink: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
+class AddLinkViewController: BaseViewController, UITextFieldDelegate, UITextViewDelegate {
     
 //    var delegate: ReloadDataDelegate? //딜리게이트
     var detailResult: Results<detailCateGory>!

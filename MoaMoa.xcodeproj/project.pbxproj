@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E16B06E2AE2972200071396 /* AddControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E16B06D2AE2972200071396 /* AddControllerViewModel.swift */; };
+		6E16B0702AE29B9600071396 /* SaveAddCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E16B06F2AE29B9600071396 /* SaveAddCategory.swift */; };
 		6E2C1E452AE0A43500CD6004 /* AllCategoryViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C1E442AE0A43500CD6004 /* AllCategoryViewcontroller.swift */; };
 		6E2C1E472AE0A4F200CD6004 /* AllSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C1E462AE0A4F200CD6004 /* AllSearchViewController.swift */; };
 		6E35A5B12ACD33D200E2306C /* Observable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E35A5B02ACD33D200E2306C /* Observable.swift */; };
@@ -33,11 +35,11 @@
 		6E74E65F2AC960F50026627D /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E65E2AC960F50026627D /* BaseCollectionViewCell.swift */; };
 		6E74E6612AC961CF0026627D /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6602AC961CF0026627D /* HomeCollectionViewCell.swift */; };
 		6E74E6642AC979FC0026627D /* CateGoryRealm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6632AC979FC0026627D /* CateGoryRealm.swift */; };
-		6E74E6672AC9C9230026627D /* AddLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6662AC9C9230026627D /* AddLink.swift */; };
+		6E74E6672AC9C9230026627D /* AddLinkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6662AC9C9230026627D /* AddLinkViewController.swift */; };
 		6E74E6692ACA7B950026627D /* CategoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6682ACA7B950026627D /* CategoryCollectionViewCell.swift */; };
 		6E74E66C2ACA8AE20026627D /* DetailCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E66B2ACA8AE20026627D /* DetailCategoryViewController.swift */; };
 		6E74E66E2ACA97610026627D /* LikeCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E66D2ACA97610026627D /* LikeCategoryViewController.swift */; };
-		6E74E6722ACACADD0026627D /* AddCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6712ACACADD0026627D /* AddCategoryViewController.swift */; };
+		6E74E6722ACACADD0026627D /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6712ACACADD0026627D /* AddCategoryView.swift */; };
 		6E74E6752ACAD3750026627D /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E74E6742ACAD3750026627D /* WebViewController.swift */; };
 		6E7744832ADC6D7A00DD0E90 /* CategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7744822ADC6D7A00DD0E90 /* CategoryViewModel.swift */; };
 		6EA78EA22AD92142000B0B93 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6EA78EA12AD92142000B0B93 /* IQKeyboardManagerSwift */; };
@@ -47,6 +49,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6E16B06D2AE2972200071396 /* AddControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddControllerViewModel.swift; sourceTree = "<group>"; };
+		6E16B06F2AE29B9600071396 /* SaveAddCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveAddCategory.swift; sourceTree = "<group>"; };
 		6E2C1E442AE0A43500CD6004 /* AllCategoryViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCategoryViewcontroller.swift; sourceTree = "<group>"; };
 		6E2C1E462AE0A4F200CD6004 /* AllSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSearchViewController.swift; sourceTree = "<group>"; };
 		6E35A5B02ACD33D200E2306C /* Observable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Observable.swift; sourceTree = "<group>"; };
@@ -72,11 +76,11 @@
 		6E74E65E2AC960F50026627D /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
 		6E74E6602AC961CF0026627D /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 		6E74E6632AC979FC0026627D /* CateGoryRealm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CateGoryRealm.swift; sourceTree = "<group>"; };
-		6E74E6662AC9C9230026627D /* AddLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLink.swift; sourceTree = "<group>"; };
+		6E74E6662AC9C9230026627D /* AddLinkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLinkViewController.swift; sourceTree = "<group>"; };
 		6E74E6682ACA7B950026627D /* CategoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		6E74E66B2ACA8AE20026627D /* DetailCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCategoryViewController.swift; sourceTree = "<group>"; };
 		6E74E66D2ACA97610026627D /* LikeCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikeCategoryViewController.swift; sourceTree = "<group>"; };
-		6E74E6712ACACADD0026627D /* AddCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryViewController.swift; sourceTree = "<group>"; };
+		6E74E6712ACACADD0026627D /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
 		6E74E6742ACAD3750026627D /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		6E7744822ADC6D7A00DD0E90 /* CategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewModel.swift; sourceTree = "<group>"; };
 		6EA7F0912AD7C99000A11ACD /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -100,6 +104,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6E16B06C2AE2949C00071396 /* AddCategory */ = {
+			isa = PBXGroup;
+			children = (
+				6E16B06F2AE29B9600071396 /* SaveAddCategory.swift */,
+				6E74E6712ACACADD0026627D /* AddCategoryView.swift */,
+				6E16B06D2AE2972200071396 /* AddControllerViewModel.swift */,
+			);
+			path = AddCategory;
+			sourceTree = "<group>";
+		};
 		6E586A152AD1447E009BFCC9 /* Extention */ = {
 			isa = PBXGroup;
 			children = (
@@ -147,7 +161,7 @@
 				6E74E64C2AC95DA00026627D /* Category */,
 				6E74E64F2AC95DF80026627D /* Setting */,
 				6E74E6652AC9C8820026627D /* Link */,
-				6E74E6622AC979CA0026627D /* Realm */,
+				6E74E6622AC979CA0026627D /* RealmModel */,
 				6E74E6492AC95CC40026627D /* Base */,
 				6E74E5D02AC3D5FE0026627D /* AppDelegate.swift */,
 				6E74E5D22AC3D5FE0026627D /* SceneDelegate.swift */,
@@ -182,9 +196,9 @@
 		6E74E64C2AC95DA00026627D /* Category */ = {
 			isa = PBXGroup;
 			children = (
+				6E16B06C2AE2949C00071396 /* AddCategory */,
 				6E74E64D2AC95DDF0026627D /* CategoryViewController.swift */,
 				6E74E6682ACA7B950026627D /* CategoryCollectionViewCell.swift */,
-				6E74E6712ACACADD0026627D /* AddCategoryViewController.swift */,
 				6E7744822ADC6D7A00DD0E90 /* CategoryViewModel.swift */,
 			);
 			path = Category;
@@ -198,18 +212,18 @@
 			path = Setting;
 			sourceTree = "<group>";
 		};
-		6E74E6622AC979CA0026627D /* Realm */ = {
+		6E74E6622AC979CA0026627D /* RealmModel */ = {
 			isa = PBXGroup;
 			children = (
 				6E74E6632AC979FC0026627D /* CateGoryRealm.swift */,
 			);
-			path = Realm;
+			path = RealmModel;
 			sourceTree = "<group>";
 		};
 		6E74E6652AC9C8820026627D /* Link */ = {
 			isa = PBXGroup;
 			children = (
-				6E74E6662AC9C9230026627D /* AddLink.swift */,
+				6E74E6662AC9C9230026627D /* AddLinkViewController.swift */,
 				6EAC0E022ACC23B0009C9D00 /* ModifyLinkViewcontroller.swift */,
 				6E35A5B22ACD34D600E2306C /* LinkViewModel.swift */,
 				6E586A042ACFA81C009BFCC9 /* AddToAnotherCategoryViewController.swift */,
@@ -325,6 +339,7 @@
 				6E74E5D52AC3D5FE0026627D /* HomeViewController.swift in Sources */,
 				6E74E64B2AC95CDB0026627D /* BaseViewController.swift in Sources */,
 				6E35A5B12ACD33D200E2306C /* Observable.swift in Sources */,
+				6E16B0702AE29B9600071396 /* SaveAddCategory.swift in Sources */,
 				6E74E5D12AC3D5FE0026627D /* AppDelegate.swift in Sources */,
 				6EF522E12ADFA4F600EFD1D4 /* HomeSearchViewController.swift in Sources */,
 				6E586A052ACFA81C009BFCC9 /* AddToAnotherCategoryViewController.swift in Sources */,
@@ -333,13 +348,14 @@
 				6E74E5D32AC3D5FE0026627D /* SceneDelegate.swift in Sources */,
 				6E74E66E2ACA97610026627D /* LikeCategoryViewController.swift in Sources */,
 				6E74E6522AC95E320026627D /* SettingViewController.swift in Sources */,
-				6E74E6672AC9C9230026627D /* AddLink.swift in Sources */,
-				6E74E6722ACACADD0026627D /* AddCategoryViewController.swift in Sources */,
+				6E74E6672AC9C9230026627D /* AddLinkViewController.swift in Sources */,
+				6E74E6722ACACADD0026627D /* AddCategoryView.swift in Sources */,
 				6E586A202AD255CE009BFCC9 /* MetaController.swift in Sources */,
 				6E74E6692ACA7B950026627D /* CategoryCollectionViewCell.swift in Sources */,
 				6E586A172AD144B2009BFCC9 /* ExtensionGroup.swift in Sources */,
 				6E586A122AD11EF5009BFCC9 /* BaseTableViewCell.swift in Sources */,
 				6E586A1A2AD25486009BFCC9 /* MetaData.swift in Sources */,
+				6E16B06E2AE2972200071396 /* AddControllerViewModel.swift in Sources */,
 				6E586A262AD62692009BFCC9 /* Layout+Extension.swift in Sources */,
 				6E2C1E452AE0A43500CD6004 /* AllCategoryViewcontroller.swift in Sources */,
 				6E74E6642AC979FC0026627D /* CateGoryRealm.swift in Sources */,
@@ -509,7 +525,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jaebeen.MoaMoa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -542,7 +558,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jaebeen.MoaMoa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
