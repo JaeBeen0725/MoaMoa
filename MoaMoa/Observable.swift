@@ -14,6 +14,7 @@ class Observable<T> {
     var value: T {
         didSet {
             listener?(value)
+    
         }
     }
     
@@ -25,7 +26,4 @@ class Observable<T> {
         closure(value)
         listener = closure
     }
-    
-   
-    
 }

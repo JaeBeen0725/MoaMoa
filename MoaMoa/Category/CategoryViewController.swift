@@ -8,12 +8,15 @@
 import UIKit
 import RealmSwift
 
+
+
 class CategoryViewController: BaseViewController {
     
     let realm = try! Realm()
     var list: Results<CateGoryRealm>!
     var resultt: Results<detailCateGory>!
-//    var delegate: ReloadDataDelegate?  //딜리게이트
+
+    let addCategoryViewModel = AddCategoryViewModel()
     
     let largeTitleLabel = {
         let view = UILabel()
@@ -39,7 +42,7 @@ class CategoryViewController: BaseViewController {
         return view
     }()
     
- 
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,11 +71,11 @@ class CategoryViewController: BaseViewController {
     
     @objc func addCategory() {       
         let vc =  AddCategoryView()
+      
         vc.modalPresentationStyle = .overFullScreen
      
         present( vc, animated: true)
     }
-    
     
     override func configure() {
         super.configure()
@@ -93,7 +96,6 @@ class CategoryViewController: BaseViewController {
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
-    
 }
 
 
@@ -142,7 +144,9 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
                 
                 
                 let modifyAction = UIAction(title: "카테고리 이름 변경", subtitle: nil, image: nil, identifier: nil, discoverabilityTitle: nil, state: .off) { _ in
-                    let vc = AddCategoryView(/*delegate: self, */categoryPk: self.list[indexPath.row]._id)  //딜리게이트
+                    let vc = AddCategoryView()
+                    vc.addCategoryViewModel.categoryPk = self.list[indexPath.row]._id
+//
                     vc.modalPresentationStyle = .overFullScreen
                     self.present(vc, animated: true)
                 }
@@ -190,6 +194,6 @@ extension CategoryViewController: UICollectionViewDataSource, UICollectionViewDe
 //    func recevieCollectionViewReloadData() {
 //        categoryCollectionView.reloadData()
 //    }
-    
-    
+//    
+//    
 //}

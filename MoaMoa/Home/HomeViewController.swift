@@ -75,7 +75,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         addLinkButton.clipsToBounds = true
         
     }
-    
+  
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -84,7 +84,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         
         self.navigationController?.navigationBar.tintColor = UIColor(named: "reversedSystemBackgroundColor")
         
-       
+        print(realm.configuration.fileURL)
         
         homeCollectionView.delegate = self
         homeCollectionView.dataSource = self

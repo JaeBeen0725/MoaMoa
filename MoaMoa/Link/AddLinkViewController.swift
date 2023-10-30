@@ -381,6 +381,7 @@ class AddLinkViewController: BaseViewController, UITextFieldDelegate, UITextView
     
 
     @objc func addButtonTapped(canTap: Bool) {
+        
         if fk == nil {
             if activateButton == true {
                 
@@ -407,7 +408,7 @@ class AddLinkViewController: BaseViewController, UITextFieldDelegate, UITextView
                         }
                     }
                     
-                    self.saveIamgeToDocument(fileName: "\(allcategory.last!._id)", image: temporaryUIImageData ?? UIImage(resource: .noPickture))
+                    self.saveIamgeToDocument(fileName: "\(allcategory.last!._id)", image: temporaryUIImageData ?? UIImage(named: "noPickture")!)
                     
                     //                    delegate!.recevieCollectionViewReloadData() //딜리게이트
                     NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )

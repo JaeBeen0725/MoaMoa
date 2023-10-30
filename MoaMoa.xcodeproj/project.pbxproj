@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E0A8CE22AE9EF270086EC70 /* CateGoryTableRepositary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0A8CE12AE9EF270086EC70 /* CateGoryTableRepositary.swift */; };
 		6E16B06E2AE2972200071396 /* AddControllerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E16B06D2AE2972200071396 /* AddControllerViewModel.swift */; };
 		6E16B0702AE29B9600071396 /* SaveAddCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E16B06F2AE29B9600071396 /* SaveAddCategory.swift */; };
 		6E2C1E452AE0A43500CD6004 /* AllCategoryViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2C1E442AE0A43500CD6004 /* AllCategoryViewcontroller.swift */; };
@@ -49,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6E0A8CE12AE9EF270086EC70 /* CateGoryTableRepositary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CateGoryTableRepositary.swift; sourceTree = "<group>"; };
 		6E16B06D2AE2972200071396 /* AddControllerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddControllerViewModel.swift; sourceTree = "<group>"; };
 		6E16B06F2AE29B9600071396 /* SaveAddCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveAddCategory.swift; sourceTree = "<group>"; };
 		6E2C1E442AE0A43500CD6004 /* AllCategoryViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllCategoryViewcontroller.swift; sourceTree = "<group>"; };
@@ -216,6 +218,7 @@
 			isa = PBXGroup;
 			children = (
 				6E74E6632AC979FC0026627D /* CateGoryRealm.swift */,
+				6E0A8CE12AE9EF270086EC70 /* CateGoryTableRepositary.swift */,
 			);
 			path = RealmModel;
 			sourceTree = "<group>";
@@ -355,6 +358,7 @@
 				6E586A172AD144B2009BFCC9 /* ExtensionGroup.swift in Sources */,
 				6E586A122AD11EF5009BFCC9 /* BaseTableViewCell.swift in Sources */,
 				6E586A1A2AD25486009BFCC9 /* MetaData.swift in Sources */,
+				6E0A8CE22AE9EF270086EC70 /* CateGoryTableRepositary.swift in Sources */,
 				6E16B06E2AE2972200071396 /* AddControllerViewModel.swift in Sources */,
 				6E586A262AD62692009BFCC9 /* Layout+Extension.swift in Sources */,
 				6E2C1E452AE0A43500CD6004 /* AllCategoryViewcontroller.swift in Sources */,
@@ -511,6 +515,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = B24G869DB7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MoaMoa/Info.plist;
@@ -544,6 +549,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = B24G869DB7;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MoaMoa/Info.plist;

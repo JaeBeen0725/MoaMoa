@@ -10,12 +10,12 @@ import RealmSwift
 
 class AddCategoryView: BaseViewController, UITextFieldDelegate  {
     
-    let titleLabel = {
+   lazy var titleLabel = {
        let view = UILabel()
         view.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
         view.textAlignment = .center
         view.textColor = .systemBackground
-        view.text = "카테고리 추가"
+        view.text = addCategoryViewModel.addCategoryViewTitle
         view.font = UIFont.systemFont(ofSize: 20)
         
         return view
@@ -83,22 +83,20 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
     }()
   
     
-
+ 
     let realm = try! Realm()
-    var categoryPk : ObjectId?
+    
     var list: Results<CateGoryRealm>!
     
     let addCategoryViewModel = AddCategoryViewModel()
-    
-    init(categoryPk: ObjectId? = nil) {
-
-        self.categoryPk = categoryPk
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+//    var categoryPk : ObjectId?
+//    init(categoryPk: ObjectId? = nil) {
+//
+//        self.categoryPk = categoryPk
+//        super.init(nibName: nil, bundle: nil)
+//    }
+    let manager = CateGoryTableRepositary()
+  
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,10 +107,32 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         list = realm.objects(CateGoryRealm.self)
         
         showData()
+        checkBind()
         
         addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
         cancleButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        titleTextField.addTarget(self, action: #selector(titleTextFieldDidChanged), for: .touchUpInside)
+        titleTextField.addTarget(self, action: #selector(titleTextFieldDidChanged), for: .editingChanged)
+        
+       
+    }
+    
+    func checkBind() {
+       
+        addCategoryViewModel.titleTextFieldChange.bind {[weak self] text in
+            guard let self = self else {return}
+            self.titleTextField.text = text
+        }
+        
+        addCategoryViewModel.isValid.bind {[weak self] bool in
+            guard let self = self else {return}
+       
+            if !bool { // false
+                titleTextField.setPlaceholder(color: .gray)
+                titleTextField.placeholder = "제목을 적어주세요."
+
+            }      
+        }
+
         
         
     }
@@ -121,12 +141,13 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         
         titleUnderBarUIView.backgroundColor = .systemBackground
         warningTitleLabel.isHidden = true
-        if titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
-            titleTextField.setPlaceholder(color: .gray)
-            titleTextField.placeholder = "제목을 적어주세요."
-        }
+        
+
         titleTextField.text = String(titleTextField.text!.prefix(20))
         titleTextCountLabel.text = "(\(String(describing: titleTextField.text!.count))/20)"
+        
+        addCategoryViewModel.titleTextFieldChange.value = titleTextField.text ?? ""
+        addCategoryViewModel.checkTitleTextField()
     }
 
     
@@ -136,75 +157,84 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
        dismiss(animated: true)
         
     }
-    @objc func addButtonTapped() {
-        if titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
-            
-            titleUnderBarUIView.backgroundColor = .red
-            warningTitleLabel.isHidden = false
-        }
-        else {
-            
-            if categoryPk == nil {
-                
-                
-                let categorylist = list.where {
-                    $0.title == titleTextField.text ?? ""
-                }
-                
-                if categorylist.count == 0 {
-                    let data = CateGoryRealm(title: titleTextField.text ?? "")
-                    
-                    try! realm.write{
-                        realm.add(data)
-                    }
-                    
-                    //                delegate?.recevieCollectionViewReloadData() //딜리게이트
-                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                    dismiss(animated: true)
-                } else {
-                    showtoast(title: "중복된 타이틀입니다.")
-                    titleUnderBarUIView.backgroundColor = .red
-                }
-                
-            } else {
-                let categorylist = list.where {
-                    $0.title == titleTextField.text ?? ""
-                }
-                if categorylist.count == 0 {
-                    
-                    let category = list.where {
-                        $0._id == categoryPk!
-                    }
-                    
-                    try! realm.write{
-                        category.first!.title = titleTextField.text ?? ""
-                    }
-                    //                delegate?.recevieCollectionViewReloadData() //딜리게이트
-                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
-                    dismiss(animated: true)
-                } else {
-                    showtoast(title: "중복된 타이틀입니다.")
-                    titleUnderBarUIView.backgroundColor = .red
-                    
-                }
-        
-                
-            }
-            
-            
-        }
-    }
     
+    @objc func addButtonTapped() {
+        
+        warningTitleLabel.isHidden = addCategoryViewModel.isValid.value
+        
+        titleUnderBarUIView.backgroundColor = addCategoryViewModel.isValid.value ? .systemBackground : .red
+        
+    
+//        if addCategoryViewModel.isValid.value == false {
+//            
+//            titleUnderBarUIView.backgroundColor = .red
+//            warningTitleLabel.isHidden = false
+//        }
+//        else {
+//            
+//            if categoryPk == nil {
+//                
+//                
+//                let categorylist = list.where {
+//                    $0.title == titleTextField.text ?? ""
+//                }
+//                
+//                if categorylist.count == 0 {
+//                    let data = CateGoryRealm(title: titleTextField.text ?? "")
+//                    
+//                    try! realm.write{
+//                        realm.add(data)
+//                    }
+//                    
+//                    //                delegate?.recevieCollectionViewReloadData() //딜리게이트
+//                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+//                    dismiss(animated: true)
+//                } else {
+//                    showtoast(title: "중복된 타이틀입니다.")
+//                    titleUnderBarUIView.backgroundColor = .red
+//                }
+//                
+//            } else {
+//                let categorylist = list.where {
+//                    $0.title == titleTextField.text ?? ""
+//                }
+//                if categorylist.count == 0 {
+//                    
+//                    let category = list.where {
+//                        $0._id == categoryPk!
+//                    }
+//                    
+//                    try! realm.write{
+//                        category.first!.title = titleTextField.text ?? ""
+//                    }
+//                    //                delegate?.recevieCollectionViewReloadData() //딜리게이트
+//                    NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+//                    dismiss(animated: true)
+//                } else {
+//                    showtoast(title: "중복된 타이틀입니다.")
+//                    titleUnderBarUIView.backgroundColor = .red
+//                    
+//                }
+//        
+//                
+//            }
+//            
+//            
+//        }
+    }
+   
     
     func showData() {
-        if categoryPk != nil {
-            let category = list.where {
-                $0._id == categoryPk!
-            }
-            titleTextField.text = category.first!.title
-            titleLabel.text = "카테고리 이름 변경"
-            addButton.setTitle("변경 완료", for: .normal)
-        }
+        addCategoryViewModel.modifyCategory()
+//        titleLabel.text = addCategoryViewModel.addCategoryViewTitle
+//        if addCategoryViewModel.categoryPk != nil {
+//            let category = list.where {
+//                $0._id == categoryPk
+//            }
+//            titleTextField.text = category.first!.title
+//            titleLabel.text = "카테고리 이름 변경"
+//            addButton.setTitle("변경 완료", for: .normal)
+//        }
         
         }
     
@@ -212,6 +242,7 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         view.endEditing(true)
        
     }
+    
     
     func showtoast(title: String) {
         self.view.makeToast(title, duration: 1.5,
@@ -237,7 +268,6 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         
         
     }
-    
     
     override func setContraints() {
         super.setContraints()
