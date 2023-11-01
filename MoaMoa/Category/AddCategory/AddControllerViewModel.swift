@@ -13,8 +13,11 @@ class AddCategoryViewModel {
     
     let cateGoryTableRepositary = CateGoryTableRepositary()
     var titleTextFieldChange = Observable("")
+    var titleTextCount = Observable(0)
     var isValid = Observable(false)
     var addCategoryViewTitle: String?
+    var buttonTitle: String?
+    var showToast = false
     //    var warningTitleLabel = true
     
     var categoryPk: ObjectId? 
@@ -23,39 +26,85 @@ class AddCategoryViewModel {
     
     
     func checkTitleTextField() {
-        
+      
         guard !titleTextFieldChange.value.trimmingCharacters(in: .whitespaces).isEmpty == true else {
+            showToast  = false
             isValid.value = false
             return
         }
+        
+        guard cateGoryTableRepositary.fetchCheckDuplicationCategoryTitleFilter(title: titleTextFieldChange.value).count == 0 else {
+            isValid.value = false
+            showToast  = true
+            return
+        }
+       
         isValid.value = true
         return
     }
     
     
-    func modifyCategory(){
-      print("gsdergdergaergadrsgadrsgdfg", categoryPk)
-//        let vc = CategoryViewController()
-//        vc.completionHandler = {  data in
-//            self.categoryPk = data
-//            print(data)
-            //
-            //        }
-            //        print(vc.completionHandler!)
+    func checkCategoryPk(){
+        
+        
+        if categoryPk != nil {
+           
+            let result = cateGoryTableRepositary.fetchCategoryFilter(pk: categoryPk!).first!.title
+            titleTextFieldChange.value = result
+            titleTextCount.value = result.count
+            addCategoryViewTitle = "카테고리 변경하기"
+            buttonTitle = "변경"
             
-            //        print( categoryPk)
-            //        if categoryPk != nil {
-            //            let result = cateGoryTableRepositary.fetchCategoryFilter(pk: categoryPk!)
-            //            titleTextFieldChange.value = result.first?.title ?? ""
-            //            AddCategoryViewTitle = "카테고리 이름 변경"
-            //        }
-            
- 
+        } else {
+            addCategoryViewTitle = "카테고리 추가하기"
+            buttonTitle = "추가"
+        }
+        
+
         
     }
     
-    
-    
+    func buttonTapped()  {
+        
+        guard isValid.value == true else { return }
+      
+        
+        guard categoryPk == nil else {
+            showToast = false
+            let result = cateGoryTableRepositary.fetchCategoryFilter(pk: categoryPk!).first
+            cateGoryTableRepositary.changeCategoryTitle(result!, title: titleTextFieldChange.value)
+            
+            return
+        }
+       
+        cateGoryTableRepositary.createCategoryItem(title: titleTextFieldChange.value)
+        showToast = false
+        
+//        if isValid.value == true {
+//            showToast = false
+//            if cateGoryTableRepositary.fetchCheckDuplicationCategoryTitleFilter(title: titleTextFieldChange.value).count == 0 {
+//                
+//                if categoryPk != nil {
+//                    let result = cateGoryTableRepositary.fetchCategoryFilter(pk: categoryPk!).first
+//                    cateGoryTableRepositary.changeCategoryTitle(result!, title: titleTextFieldChange.value)
+//                    
+//                } else {
+//
+//                    cateGoryTableRepositary.createCategoryItem(title: titleTextFieldChange.value)
+//                }
+//            } else {
+//                showToast = true
+//                
+//            }
+//            
+//        }
+        
+        
+        
+        
+    }
+  
+
     
     //if titleTextField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true {
     //

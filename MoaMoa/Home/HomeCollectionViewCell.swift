@@ -21,7 +21,7 @@ class HomeCollectionViewCell: BaseCollectionViewCell, UITextViewDelegate {
         
         layer.cornerRadius = 9
         layer.borderWidth = 0.4
-        layer.borderColor = UIColor(named: "reversedSystemBackground")!.cgColor
+        layer.borderColor = UIColor(named: "reversedSystemBackground")?.cgColor
         contentView.layer.cornerRadius = 9
         
         contentView.clipsToBounds = true

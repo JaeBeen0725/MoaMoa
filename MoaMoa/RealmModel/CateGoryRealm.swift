@@ -14,20 +14,15 @@ class CateGoryRealm: Object {
     @Persisted var title: String
     @Persisted var detail: List<detailCateGory>
     
-   convenience init( title: String) {
+    convenience init( title: String) {
         self.init()
-    
         self.title = title
-   
     }
-    
-    
 }
 
 class detailCateGory: Object {
     
     @Persisted(primaryKey: true) var _id: ObjectId
-    
     @Persisted var fk: ObjectId
     @Persisted var link: String
     @Persisted var title: String
@@ -50,6 +45,5 @@ class detailCateGory: Object {
         self.onlyAll = onlyAll
         
     }
-    
-    
 }
+

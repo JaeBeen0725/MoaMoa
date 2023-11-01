@@ -13,16 +13,19 @@ protocol CateGoryTableRepositoryType: AnyObject {
     func fetchCategory() -> Results<CateGoryRealm>
     func fetchDetailCategory() -> Results<detailCateGory>
     func fetchCategoryFilter(pk: ObjectId) -> Results<CateGoryRealm>
+    func fetchCheckDuplicationCategoryTitleFilter(title: String) -> Results<CateGoryRealm>
     func fetchDetailCategoryFilter(fk: ObjectId) -> Results<detailCateGory>
-//    func createCategoryItem(_ item: CateGoryRealm)
+    func createCategoryItem(title: String)
+    func changeCategoryTitle(_ item: CateGoryRealm, title: String)
 //    func createDetailCategoryItem(_ item: detailCateGory)
 }
 
 class CateGoryTableRepositary: CateGoryTableRepositoryType {
-    
+ 
+
     private let realm = try! Realm()
     
-    
+   
     func fetchCategory() -> Results<CateGoryRealm> {
         let categoryData = realm.objects(CateGoryRealm.self)
         return categoryData
@@ -39,6 +42,13 @@ class CateGoryTableRepositary: CateGoryTableRepositoryType {
         }
         return result
     }
+    func fetchCheckDuplicationCategoryTitleFilter(title: String) -> RealmSwift.Results<CateGoryRealm> {
+        let result = realm.objects(CateGoryRealm.self).where{
+            $0.title == title
+        }
+        return result
+    }
+    
     
     func fetchDetailCategoryFilter(fk: ObjectId) -> Results<detailCateGory> {
         let result = realm.objects(detailCateGory.self).where {
@@ -47,10 +57,23 @@ class CateGoryTableRepositary: CateGoryTableRepositoryType {
         return result
     }
     
-//    func createCategoryItem(_ item: CateGoryRealm) {
-//        <#code#>
-//    }
-//    
+    func createCategoryItem(title: String) {
+        let item = CateGoryRealm(title: title)
+        try! realm.write {
+            realm.add(item)
+        }
+        
+    }
+    
+    func changeCategoryTitle(_ item: CateGoryRealm, title: String) {
+        try! realm.write{
+            item.title = title
+        }
+    }
+    
+    
+    
+//
 //    func createDetailCategoryItem(_ item: detailCateGory) {
 //        <#code#>
 //    }

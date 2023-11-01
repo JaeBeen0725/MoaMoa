@@ -37,7 +37,7 @@ extension UIViewController {
         if FileManager.default.fileExists(atPath: fileURL.path) {
             return UIImage(contentsOfFile: fileURL.path)!
         } else {
-            return UIImage(systemName: "noPickture")!
+            return UIImage(named: "NOPickture")!
         }
     }
     

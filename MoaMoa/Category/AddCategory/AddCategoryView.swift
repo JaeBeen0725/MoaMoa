@@ -15,12 +15,12 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         view.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
         view.textAlignment = .center
         view.textColor = .systemBackground
-        view.text = addCategoryViewModel.addCategoryViewTitle
+       
         view.font = UIFont.systemFont(ofSize: 20)
         
         return view
     }()
-    let titleTextField = {
+  lazy var titleTextField = {
         let view = UITextField()
         view.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
         view.setClearButton(with: UIImage(systemName: "x.circle.fill")!, mode: .whileEditing)
@@ -31,7 +31,7 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         view.setPlaceholder(color: .gray)
       return view
     }()
-    let titleTextCountLabel = {
+   lazy var titleTextCountLabel = {
         let view = UILabel()
         view.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
         view.textColor = .gray
@@ -39,7 +39,7 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         if view.adjustsFontSizeToFitWidth == false {
             view.adjustsFontSizeToFitWidth = true
                }
-        view.text = "(0/15)"
+        
         return view
     }()
     
@@ -54,7 +54,7 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         view.backgroundColor = UIColor(named: "reversedSystemBackgroundColor")
         return view
     }()
-    let cancleButton = {
+    var cancleButton = {
        let view = UIButton()
         view.layer.cornerRadius = 15
         view.backgroundColor = UIColor(named: "SignatureColor")
@@ -63,11 +63,11 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         view.titleLabel?.font = .systemFont(ofSize: 19)
         return view
     }()
-    let addButton = {
+   lazy var addButton = {
         let view = UIButton()
          view.layer.cornerRadius = 15
          view.backgroundColor = UIColor(named: "SignatureColor")
-        view.setTitle("추가", for: .normal)
+        
         view.setTitleColor(.white, for: .normal)
         view.titleLabel?.font = UIFont.systemFont(ofSize: 19)
          return view
@@ -115,12 +115,31 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         
        
     }
+    override func loadView() {
+        super.loadView()
+        
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        addCategoryViewModel.checkCategoryPk()
+        titleLabel.text = addCategoryViewModel.addCategoryViewTitle
+        addButton.setTitle(addCategoryViewModel.buttonTitle, for: .normal)
+        
+        titleTextField.text = addCategoryViewModel.titleTextFieldChange.value
+        addCategoryViewModel.titleTextFieldChange.value = titleTextField.text!
+        titleTextCountLabel.text = "(\(String(describing: addCategoryViewModel.titleTextCount.value))/20)"
+        print(titleTextCountLabel.text)
+    }
     
     func checkBind() {
        
         addCategoryViewModel.titleTextFieldChange.bind {[weak self] text in
             guard let self = self else {return}
             self.titleTextField.text = text
+            
         }
         
         addCategoryViewModel.isValid.bind {[weak self] bool in
@@ -163,8 +182,15 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
         warningTitleLabel.isHidden = addCategoryViewModel.isValid.value
         
         titleUnderBarUIView.backgroundColor = addCategoryViewModel.isValid.value ? .systemBackground : .red
+        addCategoryViewModel.buttonTapped()
+        if addCategoryViewModel.showToast == true {
+            showtoast(title: "같은 제목의 카테고리가 있습니다.")
+        }
+        if addCategoryViewModel.isValid.value == true {
+            NotificationCenter.default.post(name:Notification.Name("reloadData"), object: nil )
+            dismiss(animated: true)
+        }
         
-    
 //        if addCategoryViewModel.isValid.value == false {
 //            
 //            titleUnderBarUIView.backgroundColor = .red
@@ -225,7 +251,7 @@ class AddCategoryView: BaseViewController, UITextFieldDelegate  {
    
     
     func showData() {
-        addCategoryViewModel.modifyCategory()
+        
 //        titleLabel.text = addCategoryViewModel.addCategoryViewTitle
 //        if addCategoryViewModel.categoryPk != nil {
 //            let category = list.where {
