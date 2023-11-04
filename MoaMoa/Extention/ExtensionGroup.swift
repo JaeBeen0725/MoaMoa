@@ -8,8 +8,6 @@
 import UIKit
 
 extension UIViewController {
-   
-    
     
     func showActivityVC(_ controller: UIViewController,
                          activityItems: [Any],

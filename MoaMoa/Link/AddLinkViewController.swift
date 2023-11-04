@@ -391,6 +391,7 @@ class AddLinkViewController: BaseViewController, UITextFieldDelegate, UITextView
                     let data = detailCateGory(link: linkTextField.text! ,title: titleTextField.text!, searchTitle: titleTextField.text!.lowercased(), memo: memoTextView.text ?? "" , likeLink: false, onlyAll: true)
                     
                     if categoryPK == nil {
+                        
                         try! realm.write{
                             allcategory.append(data)
                         }

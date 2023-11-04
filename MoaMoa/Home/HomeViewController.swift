@@ -79,7 +79,7 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        print(#function)
         self.navigationItem.leftBarButtonItem = UIBarButtonItem.init(customView: largeTitleLabel)
         
         self.navigationController?.navigationBar.tintColor = UIColor(named: "reversedSystemBackgroundColor")
@@ -100,15 +100,16 @@ class HomeViewController: BaseViewController, UIViewControllerTransitioningDeleg
         
         NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
     }
-    
+    @objc func collectionViewReloadData() {
+        homeCollectionView.reloadData()
+    }
+   
     @objc func searchbuttonTapped() {
         navigationController?.pushViewController(HomeSearchViewController(), animated: true)
         
     }
     
-    @objc func collectionViewReloadData() {
-        homeCollectionView.reloadData()
-    }
+   
 
 //    override func viewDidAppear(_ animated: Bool) {
 //        super.viewDidAppear(animated)
@@ -280,6 +281,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "offMemo"), object: nil)
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
         animator.addCompletion {

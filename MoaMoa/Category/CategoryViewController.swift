@@ -46,6 +46,7 @@ class CategoryViewController: BaseViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("@@@@@@@@", #function)
 //        title = "카테고리"
 //        navigationItem.title = "카테고리"
 //        navigationController?.navigationBar.prefersLargeTitles = true
@@ -59,6 +60,7 @@ class CategoryViewController: BaseViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(collectionViewReloadData), name: NSNotification.Name("reloadData") ,object: nil)
     }
+    
     
     
     @objc func collectionViewReloadData() {
