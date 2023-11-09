@@ -25,7 +25,7 @@
 
 ## 스크린샷
 
-<img width="1013" alt="스크린샷 2023-11-02 오후 5 06 22" src="https://github.com/JaeBeen0725/MoaMoa/assets/105216574/e1e9b920-41e3-478f-b206-91c0669727a4">
+<img width="1013" alt="스크린샷 2023-11-02 오후 5 06 22" src="https://github.com/JaeBeen0725/MoaMoa/assets/105216574/beee3f34-c1ae-40b0-b8b3-31a69915b39f">
 
 ## 주요 기능
 - 링크별 썸네일 및 제목 자동 생성 기능
